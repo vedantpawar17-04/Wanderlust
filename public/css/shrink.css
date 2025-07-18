@@ -1,0 +1,238 @@
+/* Base Navbar Styles */
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #222;
+}
+
+/* Desktop Navigation Styles */
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.desktop-nav .nav-link {
+    color: #222;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease;
+}
+
+.desktop-nav .nav-link:hover {
+    color: #000;
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+    max-width: 360px;
+    width: 100%;
+}
+
+.search-input {
+    padding-right: 40px;
+    border-radius: 24px;
+    border: 1px solid #ddd;
+    transition: box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    border-color: #000;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #222;
+    cursor: pointer;
+}
+
+/* Button Styles */
+.btn-black {
+    color: #222;
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+    border-radius: 24px;
+}
+
+.btn-black:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
+
+/* Mobile and Responsive Styles */
+@media (max-width: 992px) {
+    /* Hamburger Button */
+    .navbar-toggler {
+        width: 40px;
+        height: 40px;
+        border: none;
+        padding: 0;
+        background: transparent;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        outline: none !important;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    .navbar-toggler i {
+        font-size: 1.5rem;
+        color: #222;
+    }
+
+    /* Offcanvas Styles */
+    .offcanvas {
+        width: 280px;
+        background-color: #fff;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .offcanvas-header {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .offcanvas-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .offcanvas-body {
+        padding: 1rem;
+    }
+
+    /* Mobile Navigation Links */
+    .mobile-nav .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+        color: #222;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .mobile-nav .nav-link:hover {
+        color: #000;
+        background-color: #f8f9fa;
+    }
+
+    .mobile-nav .dropdown-divider {
+        margin: 0.5rem 0;
+        border-top: 1px solid #eee;
+    }
+}
+
+/* Backdrop */
+.offcanvas-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Dropdown Styles */
+.dropdown-menu {
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    color: #222;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* User Button */
+.btn-light {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.btn-light:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for offcanvas */
+@keyframes offcanvasIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes offcanvasOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.offcanvas.showing,
+.offcanvas.show {
+    animation: offcanvasIn 0.3s ease-in-out;
+}
+
+.offcanvas.hiding {
+    animation: offcanvasOut 0.3s ease-in-out;
+}
+
+/* Hamburger-Offcanvas Integration */
+.navbar-toggler[aria-expanded="true"] + .offcanvas {
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.navbar-toggler[aria-expanded="true"] {
+    position: fixed;
+    right: 330px; /* slightly more than offcanvas width */
+    z-index: 1046;
+}
+
+@media (max-width: 400px) {
+    .navbar-toggler[aria-expanded="true"] {
+        right: 20px;
+        position: absolute;
+    }
+}
+
+/* Smooth transition for hamburger position */
+.navbar-toggler {
+    transition: right 0.3s ease-in-out;
+} 

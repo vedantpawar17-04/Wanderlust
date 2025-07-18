@@ -1,0 +1,24 @@
+<% layout('/layouts/boilerplate') -%>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm border-0" style="border-radius: 1rem; overflow: hidden;">
+                <div class="card-header bg-danger text-white py-3">
+                    <h4 class="mb-0"><i class="fa-solid fa-circle-exclamation me-2"></i>Error</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text fs-5 mb-4"><%=message%></p>
+                    <div class="d-flex justify-content-between">
+                        <a href="javascript:history.back()" class="btn btn-outline-dark">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Go Back
+                        </a>
+                        <a href="/listings" class="btn btn-dark">
+                            <i class="fa-solid fa-home me-2"></i>Go to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

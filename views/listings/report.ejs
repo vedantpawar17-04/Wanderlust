@@ -1,0 +1,150 @@
+<% layout('/layouts/boilerplate') -%>
+
+<div class="container">
+    <div class="row mt-4 mb-4">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="section-heading mb-3">
+                <i class="fa-solid fa-chart-bar me-2"></i>Rating Report for <%= listing.title %>
+            </h1>
+            <p class="fs-5 text-muted mb-4">
+                <i class="fa-solid fa-map-marker-alt me-2"></i><%= listing.location %>, <%= listing.country %>
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-lg-8 offset-lg-2">
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-primary">Total Reviews</h5>
+                            <h2 class="mb-0"><%= ratingStats.total %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-primary">Average Rating</h5>
+                            <h2 class="mb-0">
+                                <% if (ratingStats.total > 0) { %>
+                                    <%= ratingStats.average %> <i class="fa-solid fa-star text-warning"></i>
+                                <% } else { %>
+                                    No ratings yet
+                                <% } %>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-primary">Overall Performance</h5>
+                            <h2 class="mb-0">
+                                <% if (ratingStats.total > 0) { %>
+                                    <% if (ratingStats.average >= 4.5) { %>
+                                        <span class="text-success">Excellent</span>
+                                    <% } else if (ratingStats.average >= 4) { %>
+                                        <span class="text-success">Very Good</span>
+                                    <% } else if (ratingStats.average >= 3.5) { %>
+                                        <span class="text-warning">Good</span>
+                                    <% } else if (ratingStats.average >= 3) { %>
+                                        <span class="text-warning">Average</span>
+                                    <% } else { %>
+                                        <span class="text-danger">Needs Improvement</span>
+                                    <% } %>
+                                <% } else { %>
+                                    <span class="text-muted">Not rated yet</span>
+                                <% } %>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rating Distribution -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Rating Distribution</h4>
+                    <div class="rating-bars">
+                        <% for(let i = 5; i >= 1; i--) { %>
+                            <div class="rating-bar mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span><%= i %> <i class="fa-solid fa-star text-warning"></i></span>
+                                    <span><%= ratingStats.distribution[i] %> reviews</span>
+                                </div>
+                                <% const percentage = ratingStats.total > 0 ? (ratingStats.distribution[i] / ratingStats.total) * 100 : 0; %>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-warning percentage-bar"
+                                         data-percentage="<%= percentage %>"
+                                         role="progressbar" 
+                                         aria-valuenow="<%= percentage %>" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        <%= percentage > 0 ? Math.round(percentage) + '%' : '' %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Recent Reviews</h4>
+                    <div class="recent-reviews">
+                        <% if (listing.reviews && listing.reviews.length > 0) { %>
+                            <% const recentReviews = [...listing.reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5); %>
+                            <% recentReviews.forEach(review => { %>
+                                <div class="review-item mb-3 p-3 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">
+                                            <i class="fa-solid fa-user me-2"></i>
+                                            <%= review.author ? review.author.username : 'Anonymous' %>
+                                        </h6>
+                                        <div class="rating">
+                                            <% for(let i = 1; i <= 5; i++) { %>
+                                                <i class="fa-solid fa-star <%= i <= review.rating ? 'text-warning' : 'text-secondary' %>"></i>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <p class="mb-1 text-muted"><%= review.comment %></p>
+                                    <small class="text-muted">
+                                        <i class="fa-regular fa-clock me-1"></i>
+                                        <%= review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'Date not available' %>
+                                    </small>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="alert alert-info mb-0">
+                                <i class="fa-solid fa-info-circle me-2"></i>
+                                No reviews have been submitted yet. Reviews will appear here once customers start sharing their experiences.
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="/listings/<%= listing._id %>" class="btn btn-dark">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Back to Listing
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Apply width to progress bars after the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.percentage-bar').forEach(function(bar) {
+        const percentage = bar.getAttribute('data-percentage');
+        bar.style.width = percentage + '%';
+    });
+});
+</script>

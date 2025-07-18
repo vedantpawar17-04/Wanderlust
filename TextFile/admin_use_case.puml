@@ -1,0 +1,62 @@
+@startuml Admin Use Case Diagram
+
+' Actor
+actor "Admin" as Admin
+actor "System" as System
+
+' Use Cases
+rectangle "User Management" {
+  usecase "Manage User Accounts" as UC1
+  usecase "View User Profiles" as UC2
+  usecase "Suspend Users" as UC3
+  usecase "Delete Users" as UC4
+}
+
+rectangle "Property Management" {
+  usecase "Moderate Listings" as UC5
+  usecase "Verify Properties" as UC6
+  usecase "Remove Listings" as UC7
+  usecase "Manage Categories" as UC8
+}
+
+rectangle "Review Management" {
+  usecase "Moderate Reviews" as UC9
+  usecase "Remove Reviews" as UC10
+}
+
+rectangle "System Management" {
+  usecase "View Analytics" as UC11
+  usecase "Generate Reports" as UC12
+  usecase "Manage System Settings" as UC13
+}
+
+' Relationships
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+
+System --> UC1
+System --> UC2
+System --> UC3
+System --> UC4
+System --> UC5
+System --> UC6
+System --> UC7
+System --> UC8
+System --> UC9
+System --> UC10
+System --> UC11
+System --> UC12
+System --> UC13
+
+@enduml 

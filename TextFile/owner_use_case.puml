@@ -1,0 +1,56 @@
+@startuml Property Owner Use Case Diagram
+
+' Actor
+actor "Property Owner" as Owner
+actor "System" as System
+
+' Use Cases
+rectangle "User Management" {
+  usecase "Register Account" as UC1
+  usecase "Login" as UC2
+  usecase "Update Profile" as UC3
+  usecase "View Profile" as UC4
+}
+
+rectangle "Property Management" {
+  usecase "Create Listing" as UC5
+  usecase "Edit Listing" as UC6
+  usecase "Delete Listing" as UC7
+  usecase "Upload Images" as UC8
+  usecase "Set Pricing" as UC9
+  usecase "Manage Availability" as UC10
+}
+
+rectangle "Review System" {
+  usecase "View Reviews" as UC11
+  usecase "Respond to Reviews" as UC12
+}
+
+' Relationships
+Owner --> UC1
+Owner --> UC2
+Owner --> UC3
+Owner --> UC4
+Owner --> UC5
+Owner --> UC6
+Owner --> UC7
+Owner --> UC8
+Owner --> UC9
+Owner --> UC10
+Owner --> UC11
+Owner --> UC12
+
+System --> UC1
+System --> UC2
+System --> UC3
+System --> UC4
+System --> UC5
+System --> UC6
+System --> UC7
+System --> UC8
+System --> UC9
+System --> UC10
+System --> UC11
+System --> UC12
+
+@enduml 

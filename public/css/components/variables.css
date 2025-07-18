@@ -1,0 +1,27 @@
+/*******************************
+ * VARIABLES & BASE STYLES
+ *******************************/
+:root {
+    --primary-color: #0d2b4e;         /* Darker navy blue for better contrast */
+    --secondary-color: #b3772f;       /* Darkened gold for better contrast */
+    --text-color: #222222;            /* Darker charcoal for better text readability */
+    --light-color: #f5f7fa;           /* Off-white */
+    --accent-color: #7d5c3f;          /* Darkened rustic brown for better contrast */
+    --border-color: #d0d5dd;          /* Slightly darker light gray */
+    --shadow-color: rgba(0,0,0,0.2);  /* Slightly more visible shadows */
+    --text-muted: #555555;            /* Darker muted text color for better readability */
+    --danger-color: #cf222e;          /* Accessible red */
+    --success-color: #1a7f37;         /* Accessible green */
+}
+
+body{
+    font-family: "Plus Jakarta Sans",sans-serif !important;
+    display: flex;
+    flex-direction:column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.container{
+    flex:1;
+} 

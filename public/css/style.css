@@ -1,0 +1,7 @@
+/* All styles have been moved to component files.
+ * Please see the /css/components directory for individual style files.
+ * Main imports are handled in main.css
+ */
+*{
+    background: radial-gradient(circle, #fbc2eb, #a6c1ee);
+} 

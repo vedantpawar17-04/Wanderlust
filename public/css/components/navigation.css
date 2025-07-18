@@ -1,0 +1,100 @@
+/*******************************
+ * HEADER & NAVIGATION
+ *******************************/
+/* Navbar */
+.navbar{
+    height: auto;
+    min-height: 5rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    background: var(--primary-color);
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.navbar-brand {
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.03);
+}
+
+.fa-compass{
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link{
+    position: relative;
+    transition: all 0.3s ease;
+    color: var(--light-color) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--secondary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 70%;
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+    padding-left: 1.5rem;
+}
+
+.dropdown-menu {
+    overflow: hidden;
+}
+
+/* Remove focus outline while maintaining accessibility */
+.navbar a:focus,
+.navbar button:focus,
+.navbar input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Custom focus styles for better accessibility */
+.navbar a:focus-visible,
+.navbar button:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Remove outline from search input on focus */
+.navbar .form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* Custom styles for dropdown focus */
+.dropdown-menu a:focus {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Custom hover effect for nav links */
+.nav-link:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Custom hover effect for buttons */
+.btn:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+} 

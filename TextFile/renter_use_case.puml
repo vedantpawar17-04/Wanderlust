@@ -1,0 +1,53 @@
+@startuml Renter Use Case Diagram
+
+' Actor
+actor "Renter" as Renter
+actor "System" as System
+
+' Use Cases
+rectangle "User Management" {
+  usecase "Register Account" as UC1
+  usecase "Login" as UC2
+  usecase "Update Profile" as UC3
+  usecase "View Profile" as UC4
+}
+
+rectangle "Search & Discovery" {
+  usecase "Search Properties" as UC5
+  usecase "Filter by Price" as UC6
+  usecase "Filter by Location" as UC7
+  usecase "View Property Details" as UC8
+}
+
+rectangle "Review System" {
+  usecase "Rate Property" as UC9
+  usecase "Write Review" as UC10
+  usecase "View Reviews" as UC11
+}
+
+' Relationships
+Renter --> UC1
+Renter --> UC2
+Renter --> UC3
+Renter --> UC4
+Renter --> UC5
+Renter --> UC6
+Renter --> UC7
+Renter --> UC8
+Renter --> UC9
+Renter --> UC10
+Renter --> UC11
+
+System --> UC1
+System --> UC2
+System --> UC3
+System --> UC4
+System --> UC5
+System --> UC6
+System --> UC7
+System --> UC8
+System --> UC9
+System --> UC10
+System --> UC11
+
+@enduml 

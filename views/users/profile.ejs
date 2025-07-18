@@ -1,0 +1,105 @@
+<%# User Profile Page Template - Shows user account information and profile settings %>
+<% layout('/layouts/boilerplate') -%>
+
+<%# Decorative Background Pattern - provides visual styling without affecting content %>
+<!-- <div class="position-fixed w-100 h-100" style="top: 0; left: 0; pointer-events: none !important; z-index: -10;">
+  <div class="position-absolute" style="top: -5%; right: -5%; width: 600px; height: 600px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(198, 153, 99, 0.1), rgba(26, 54, 93, 0.1)); filter: blur(80px);"></div>
+  <div class="position-absolute" style="bottom: -10%; left: -10%; width: 800px; height: 800px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(26, 54, 93, 0.1), rgba(198, 153, 99, 0.1)); filter: blur(120px);"></div>
+</div> -->
+
+<%# Main Profile Content Container %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card border-0 shadow-lg overflow-hidden position-relative" style="border-radius: 1rem;">
+        <%# Profile Header - displays user avatar, name, email and join date %>
+        <div class="card-header bg-secondary text-white p-4">
+          <div class="d-flex align-items-center">
+            <%# User avatar (first letter of username) %>
+            <div class="profile-image-container me-4">
+              <div class="profile-image-placeholder rounded-circle d-flex align-items-center justify-content-center text-black" style="width: 80px; height: 80px; background-color: var(--secondary-color); font-size: 2rem;">
+                <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
+              </div>
+            </div>
+            <%# User identification information %>
+            <div>
+              <h2 class="mb-1 profile-username"><%= currUser && currUser.username ? currUser.username : 'User' %></h2>
+              <p class="text-white-50 mb-0"><%= currUser && currUser.email ? currUser.email : '' %></p>
+              <p class="text-white-50 mb-0">Member since <%= currUser && currUser.registerDate ? new Date(currUser.registerDate).toLocaleDateString('en-US', {year: 'numeric', month: 'long'}) : 'January 2023' %></p>
+            </div>
+          </div>
+        </div>
+
+        <%# Profile Body - contains account information sections %>
+        <div class="card-body p-4">
+          <h4 class="section-heading mb-4 ">Account Details</h4>
+          
+          <%# Personal Information Section - username and email %>
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Personal Information</h5>
+              <form>
+                <div class="mb-3">
+                  <label for="displayName" class="form-label">Display Name</label>
+                  <input type="text" class="form-control" id="displayName" value="<%= currUser && currUser.username ? currUser.username : '' %>" disabled>
+                  <div class="form-text text-muted">Username cannot be changed at this time.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="email" value="<%= currUser && currUser.email ? currUser.email : '' %>" disabled>
+                  <div class="form-text text-muted">Email address cannot be changed at this time.</div>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <%# Profile Picture Section - currently shows placeholder with first letter %>
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Profile Picture</h5>
+              <div class="d-flex align-items-center mb-3">
+                <div class="profile-image-placeholder me-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background-color: var(--secondary-color); font-size: 2.5rem;">
+                  <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
+                </div>
+                <div>
+                  <p class="text-muted mb-2">Profile picture functionality coming soon!</p>
+                  <button class="btn btn-sm btn-outline-primary" disabled>
+                    <i class="fa-solid fa-upload me-2"></i>Upload Picture
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <%# Password Section - allows changing password (disabled for now) %>
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Password</h5>
+              <p class="text-muted mb-3">Password change functionality coming soon!</p>
+              <button class="btn btn-sm btn-outline-primary" disabled>
+                <i class="fa-solid fa-key me-2"></i>Change Password
+              </button>
+            </div>
+          </div>
+          
+          <%# Create Listing Button - only shown if user has no listings %>
+          <% if(typeof userListings === 'undefined' || !userListings || userListings.length === 0) { %>
+          <div class="text-center mt-4">
+            <p class="text-muted mb-3">You haven't created any listings yet. Ready to be a host?</p>
+            <a href="/listings/new" class="btn btn-primary px-4 py-2">
+              <i class="fa-solid fa-plus me-2"></i>Create Your First Listing
+            </a>
+          </div>
+          <% } %>
+        </div>
+        <div class="text-center mb-4">
+          <a href="/listings" class="btn btn-outline-dark rounded-pill px-4">
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to All Listings
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

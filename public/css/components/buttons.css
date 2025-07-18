@@ -1,0 +1,71 @@
+/*******************************
+ * BUTTONS & INTERACTIVE ELEMENTS
+ *******************************/
+.btn {
+    transition: all 0.3s ease;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, 
+.btn-primary:focus {
+    background-color: #061e38;
+    border-color: #061e38;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: #8c5a20;
+    border-color: #8c5a20;
+    color: white;
+}
+
+.btn-outline-light {
+    border-width: 1.5px;
+}
+
+/* Action Buttons */
+.add-btn {
+   background-color: var(--secondary-color) !important;
+   border: none !important;
+   transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+   background-color: var(--accent-color) !important;
+   transform: translateY(-2px);
+   box-shadow: 0 4px 8px rgba(200, 150, 100, 0.3);
+}
+
+.edit-btn {
+    background-color: var(--secondary-color) !important;
+    border: none !important;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: var(--accent-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(200, 150, 100, 0.3);
+} 

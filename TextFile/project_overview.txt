@@ -1,0 +1,84 @@
+ABSTRACT
+•	Enables property owners to list their accommodations and travelers to discover properties through an intuitive and secure platform
+•	Built using modern technologies including Node.js, Express, MongoDB, and EJS templating for robust performance and scalability
+•	Implements comprehensive user authentication, property management, and real-time property listing system
+•	Features advanced search capabilities, review system, and secure user interactions for a complete rental experience
+•	Incorporates responsive design principles and modern UI/UX practices to ensure optimal user experience across all devices
+
+INTRODUCTION
+•	A modern web application that serves as a property rental platform, connecting property owners with potential renters
+•	Implements a robust authentication system using Passport.js with local strategy and MongoDB session store
+•	Features a comprehensive property listing system with Cloudinary integration for image management
+•	Utilizes EJS templating with ejs-mate for efficient view rendering and partials management
+•	Implements a secure review system allowing users to rate and review properties
+•	Includes advanced search functionality with price range filtering.
+•	Built with a focus on security, implementing proper session management, password encryption, and input validation
+
+OBJECTIVE
+•	Develop a secure and scalable property rental platform using Node.js and Express.js
+•	Create an efficient property listing system with Cloudinary integration for image storage
+•	Design and implement a comprehensive review and rating system for properties
+•	Ensure responsive and user-friendly interface using Bootstrap and custom CSS
+•	Implement proper error handling and validation throughout the application
+•	Create a secure environment with proper session management and data protection
+
+PROJECT CATEGORY
+Web-based Application Development
+Backend Development
+  - JavaScript (Node.js): For server-side logic and API development
+  - Express.js: Web application framework
+Frontend Development
+  - HTML5: For structuring web pages
+  - CSS3: For styling and layout
+  - JavaScript: For client-side interactions
+  - Bootstrap: For responsive design
+  - EJS: Template engine for dynamic content
+Database
+  - MongoDB: Document-based database
+- Additional Technologies
+  - Cloudinary: For image storage and management
+  - Passport.js: For authentication
+  - EJS-mate: For template inheritance
+SCOPE OF THE PROJECT
+•	The project encompasses the development of a comprehensive property rental platform that facilitates seamless interaction between property owners and potential renters. 
+•	The system includes a robust user management system for registration, authentication, and profile management. 
+•	Property management features enable owners to create, edit, and manage their listings, including image uploads and pricing details. 
+•	The platform incorporates advanced search functionality with price range filtering options.
+•	A review system allows users to rate and provide feedback on properties, enhancing the platform's credibility. 
+•	The entire system is built with a focus on security, implementing proper authentication, session management, and data protection measures.
+
+PROPOSED SYSTEM
+•	The proposed system is a dynamic, database-driven property rental platform built with modern web technologies. 
+•	It consists of two major user types: Property Owners and User/Renters.
+•	The system includes registration and login functionalities, property listings, image uploads, and a dashboard for users to manage their listings and searches. 
+•	User/Renters can search properties and view detailed information through the platform. 
+MODULE SPECIFICATION:
+1. User Authentication
+-	Secure signup System
+-	Secure login System
+-	Password encryption
+-	Session management
+
+2. Property Management
+-	Create and edit property listings
+-	Upload and manage property images
+-	Set pricing and availability
+-	Manage property details
+3. Search and Discovery
+-	Advanced search functionality
+-	Location-based filtering
+-	Price range filtering
+4. Review System
+-	Property rating system
+-	User reviews
+5. Admin Module
+-	Property moderation
+-	Review moderation
+
+CONCLUSION
+The Wanderlust property rental platform represents a comprehensive solution for modern property rental needs. 
+By leveraging cutting-edge technologies like Node.js, Express, MongoDB, and Cloudinary, the platform delivers a robust, secure, and user-friendly experience for both property owners and renters. 
+The implementation of advanced features such as property management, search functionality, and review systems demonstrate the project's commitment to providing a complete rental solution. 
+The focus on security, performance optimization, and responsive design ensures a reliable and accessible platform for all users. 
+This project successfully addresses the challenges of property rental management while providing an intuitive interface and efficient property discovery process. 
+The modular architecture and scalable design make it well-positioned for future enhancements and feature additions.

@@ -1,0 +1,70 @@
+Use Case Diagram for WanderLust
+
+Actors:
+- User
+- Admin
+- System
+
+Use Cases:
+
+1. User Management
+   - Register User
+   - Login User
+   - Update Profile
+   - View Profile
+
+2. Travel Planning
+   - Create Trip
+   - Edit Trip
+   - Delete Trip
+   - View Trip Details
+   - Share Trip
+
+3. Destination Management
+   - Search Destinations
+   - View Destination Details
+   - Add to Favorites
+   - Rate Destination
+
+4. Admin Functions
+   - Manage Users
+   - Manage Destinations
+   - View Analytics
+   - Generate Reports
+
+Relationships:
+- User can perform all User Management and Travel Planning use cases
+- Admin can perform all Admin Functions
+- System handles authentication and data management
+
+ASCII Diagram Representation:
+
++----------------+     +----------------+     +----------------+
+|      User      |     |     Admin      |     |     System     |
++----------------+     +----------------+     +----------------+
+        |                      |                      |
+        v                      v                      v
++----------------+     +----------------+     +----------------+
+| User Management|     | Admin Functions|     | Authentication |
+| - Register     |     | - Manage Users |     | - Data Mgmt    |
+| - Login        |     | - Manage Dest. |     | - System Ops   |
+| - Update Profile|    | - View Analytics|    |                |
+| - View Profile |     | - Generate Rep.|     |                |
++----------------+     +----------------+     +----------------+
+        |                      |                      |
+        v                      v                      v
++----------------+     +----------------+     +----------------+
+| Travel Planning|     | Destination    |     |                |
+| - Create Trip  |     | Management     |     |                |
+| - Edit Trip    |     | - Search       |     |                |
+| - Delete Trip  |     | - View Details |     |                |
+| - View Details |     | - Add Favorites|     |                |
+| - Share Trip   |     | - Rate         |     |                |
++----------------+     +----------------+     +----------------+
+
+Legend:
+- Boxes represent actors and use cases
+- Vertical lines (|) show relationships
+- Arrows (v) indicate direction of interaction
+
+Note: This is a basic template. Please modify according to your specific requirements. 

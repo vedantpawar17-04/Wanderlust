@@ -1,0 +1,408 @@
+<%# Navigation Bar Component Responsive navigation bar that adapts to different screen sizes and user authentication
+  states. Includes brand links, search functionality, and user account options. %>
+<link rel="stylesheet" href="/css/navbar.css">
+
+<style>
+  nav.sticky {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .btn {
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    font-weight: 500;
+  }
+
+  .btn-black {
+    color: #2d2d2d;
+    background: transparent;
+    padding: 8px 16px;
+  }
+
+  .btn-black:hover {
+    background: #f7f7f7;
+    transform: translateY(-1px);
+  }
+
+  .search-container {
+    flex: 1;
+    max-width: 300px;
+    margin: 0 1.5rem;
+    position: relative;
+  }
+
+  .search-input {
+    border-radius: 25px;
+    padding-right: 40px;
+    border: 1px solid #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    border-color: #2d2d2d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #2d2d2d;
+    cursor: pointer;
+  }
+
+  .navbar .brand-logo {
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    color: #FF385C;
+    text-decoration: none;
+  }
+
+  .navbar .brand-logo:hover {
+    opacity: 0.9;
+  }
+
+  .about-link {
+    text-decoration: none;
+    color: #2d2d2d;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+  }
+
+  .about-link:hover {
+    background: #f7f7f7;
+  }
+
+  .dropdown-menu {
+    border-radius: 15px;
+    border: 1px solid #dddddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+  }
+
+  .dropdown-item {
+    border-radius: 10px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-item:hover {
+    background: #f7f7f7;
+  }
+
+  .btn-sign-up, .btn-log-in {
+    padding: 8px 16px;
+  }
+
+  .btn-sign-up:hover, .btn-log-in:hover {
+    background: #f7f7f7;
+    transform: translateY(-1px);
+  }
+
+  .offcanvas {
+    border-radius: 20px 0 0 20px;
+  }
+
+  .offcanvas .btn-outline-dark {
+    border-radius: 15px;
+    padding: 10px 16px;
+    transition: all 0.3s ease;
+  }
+
+  .offcanvas .btn-outline-dark:hover {
+    background: #2d2d2d;
+    color: white;
+    transform: translateX(5px);
+  }
+
+  @media (min-width: 1200px) {
+    .mobile-only {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .desktop-only {
+      display: none !important;
+    }
+    .search-container {
+      max-width: 200px;
+    }
+    .navbar .btn {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .search-container-offcanvas {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .search-container-offcanvas .search-input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #dddddd;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+  }
+
+  .search-container-offcanvas .search-input:focus {
+    background-color: #fff;
+    border-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-icon-offcanvas {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.3s ease;
+  }
+
+  .search-icon-offcanvas:hover {
+    color: #2d2d2d;
+  }
+
+  .search-container-offcanvas .search-input:focus + .search-icon-offcanvas {
+    color: #2d2d2d;
+  }
+
+  @media (max-width: 768px) {
+    .search-container-offcanvas {
+        margin-bottom: 1.5rem;
+    }
+  }
+
+  .search-icon-offcanvas.search-icon-disabled {
+    opacity: 0.3;
+    filter: blur(0.5px);
+    pointer-events: none;
+  }
+
+  .search-input-offcanvas:focus + .search-icon-offcanvas:not(.search-icon-disabled) {
+    color: #2d2d2d;
+  }
+</style>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header border-bottom">
+    <h5 id="offcanvasRightLabel" class="fw-bold">Menu</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="d-flex flex-column gap-3">
+      <%# Search Bar in Offcanvas %>
+      <form action="/listings/search" method="GET" class="mb-2 search-form-offcanvas">
+        <div class="search-container-offcanvas">
+          <input type="text" 
+                 name="location" 
+                 class="form-control search-input-offcanvas" 
+                 placeholder="Where to?"
+                 autocomplete="off"
+                 value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+          <button type="submit" class="search-icon-offcanvas">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </form>
+
+      <a class="btn btn-outline-dark" href="/listings">
+        <i class="fa-solid fa-house me-2"></i>Home
+      </a>
+      <a class="btn btn-outline-dark" href="/listings/aboutUs">
+        <i class="fa-solid fa-info-circle me-2"></i>About Us
+      </a>
+      <% if(!currUser) { %>
+        <a class="btn btn-outline-dark" href="/listings/new">
+          <i class="fa-solid fa-plus me-2"></i>Host your home
+        </a>
+        <a class="btn btn-outline-dark" href="/signup">
+          <i class="fa-solid fa-user-plus me-2"></i>Sign up
+        </a>
+        <a class="btn btn-outline-dark" href="/login">
+          <i class="fa-solid fa-sign-in-alt me-2"></i>Log in
+        </a>
+      <% } else { %>
+        <a class="btn btn-outline-dark" href="/listings/new">
+          <i class="fa-solid fa-plus me-2"></i>Host your home
+        </a>
+        <a class="btn btn-outline-dark" href="/profile">
+          <i class="fa-regular fa-user me-2"></i>Profile
+        </a>
+        <% if(userListings && userListings.length > 0) { %>
+          <a class="btn btn-outline-dark" href="/listings/owner/<%= currUser._id %>">
+            <i class="fa-solid fa-list me-2"></i>My Listings
+          </a>
+        <% } %>
+        <div class="dropdown-divider my-2"></div>
+        <form action="/logout" method="POST" class="m-0">
+          <button class="btn btn-outline-danger w-100">
+            <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</div>
+<nav class="navbar navbar-expand-lg sticky">
+  <div class="container-fluid p-2">
+    <%# Brand and Logo %>
+      <div>
+        <%# Mobile Logo with Offcanvas %>
+        <a class="m-4 p-4 btn-black text-black line mobile-only" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+          <i class="fa-solid fa-compass me-2"></i>Wanderlust
+        </a>
+        <%# Desktop Logo with Direct Link %>
+        <a class="m-4 p-4 btn-black text-black line desktop-only" href="/listings">
+          <i class="fa-solid fa-compass me-2"></i>Wanderlust
+        </a>
+      </div>
+
+      <%# Include Shrink Menu for Mobile %>
+
+      <%# Desktop Navigation %>
+      <div class="collapse navbar-collapse">
+        <%# About Us Link with proper spacing %>
+        <a class="ms-3 mt-1 text-black line" href="/listings/aboutUs">
+          About us
+        </a>
+        <%# Search Bar - Hide on About Us page %>
+        <% if (!originalUrl.endsWith('/aboutUs')) { %>
+          <div class="search-container">
+            <%# Search Form %>
+              <form class="search-form d-flex" action="/listings/search" method="GET">
+                <div class="search-container">
+                  <input class="form-control search-input" type="search" placeholder="Where to?" aria-label="Search" name="location"
+                    autocomplete="off" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                  <button type="submit" class="search-icon border-0 bg-transparent">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
+              </form>
+          </div>
+        <% } %>
+
+        <%# Right Side Navigation %>
+        <div class="navbar-nav ms-auto">
+          <% if(!currUser) { %>
+            <a class="btn btn-black mr-2 me-2" href="/listings/new">
+              <i class="fa-solid fa-plus me-1"></i>Host your home
+            </a>
+            <a class="btn btn-sign-up btn-black me-1" href="/signup">Sign up</a>
+            <a class="btn btn-log-in btn-black" href="/login">Log in</a>
+          <% } else { %>
+            <%# User Dropdown %>
+            <div class="dropdown">
+              <button class="btn btn-light rounded-pill d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-bars me-2"></i>
+                <span class="d-flex align-items-center">
+                  <i class="fa-regular fa-user me-2"></i>
+                  <%= currUser.username %>
+                </span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end mt-2">
+                <a class="dropdown-item" href="/listings/new">
+                  <i class="fa-solid fa-plus me-2 btn-light"></i>Host your home
+                </a>
+                <a class="dropdown-item" href="/profile">
+                  <i class="fa-regular fa-user me-2 btn-light"></i>Profile
+                </a>
+                <% if(userListings && userListings.length> 0) { %>
+                  <a class="dropdown-item" href="/listings/owner/<%= currUser._id %>">
+                    <i class="fa-solid fa-list me-2 btn-light"></i>My Listings
+                  </a>
+                <% } %>
+                <div class="dropdown-divider"></div>
+                <form action="/logout" method="POST" class="m-0">
+                  <button class="dropdown-item text-danger">
+                    <i class="fa-solid fa-right-from-bracket me-2 btn-light"></i>Logout
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+  </div>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Main search functionality
+    const searchForm = document.querySelector('.search-form');
+    const searchInput = document.querySelector('.search-input');
+    const searchIcon = document.querySelector('.search-icon');
+
+    // Offcanvas search functionality
+    const searchFormOffcanvas = document.querySelector('.search-form-offcanvas');
+    const searchInputOffcanvas = document.querySelector('.search-input-offcanvas');
+    const searchIconOffcanvas = document.querySelector('.search-icon-offcanvas');
+
+    // Initialize main search
+    if (searchForm && searchInput && searchIcon) {
+        updateSearchIconState(searchInput, searchIcon);
+        searchInput.addEventListener('input', () => updateSearchIconState(searchInput, searchIcon));
+        handleFormSubmit(searchForm, searchInput);
+    }
+
+    // Initialize offcanvas search
+    if (searchFormOffcanvas && searchInputOffcanvas && searchIconOffcanvas) {
+        updateSearchIconState(searchInputOffcanvas, searchIconOffcanvas);
+        searchInputOffcanvas.addEventListener('input', () => updateSearchIconState(searchInputOffcanvas, searchIconOffcanvas));
+        handleFormSubmit(searchFormOffcanvas, searchInputOffcanvas);
+    }
+
+    function updateSearchIconState(input, icon) {
+        if (!input.value.trim()) {
+            icon.classList.add('search-icon-disabled');
+            input.setAttribute('placeholder', 'Where to?');
+        } else {
+            icon.classList.remove('search-icon-disabled');
+        }
+    }
+
+    function handleFormSubmit(form, input) {
+        form.addEventListener('submit', function(e) {
+            if (!input.value.trim()) {
+                e.preventDefault();
+                input.focus();
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+            }
+        });
+    }
+});
+</script>
+
+<style>
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+</style>

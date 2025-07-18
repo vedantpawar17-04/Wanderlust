@@ -1,0 +1,565 @@
+1.Basic Setup :-
+//Basic Setup
+app.js :-
+const express=require('express');
+const app=express();
+const mongoose=require('mongoose');
+const Listing=require('../Airbnb/models/listing.js');
+app.use(express.urlencoded({ extended:true }));
+const methodOverride=require('method-override');
+app.use(methodOverride('_method'));
+app.listen(8080,()=>{
+    console.log(`Connect To The Server Is http://localhost:8080`);
+})
+app.get('/',(req,res)=>{
+    res.send('Hello World');
+})
+//ejs setup
+const path=require('path');
+app.set('view engine','ejs');
+app.set('views',path.join(__dirname,'views'));
+
+//mongoose Setup
+const MONGO_URL='mongodb://127.0.0.1:27017/wanderlust'
+async function main(){
+    await mongoose.connect(MONGO_URL);
+}
+main().then(()=>{
+    console.log('Connected To MongoDB');
+}).catch((err)=>{
+    console.error('Error Connecting To MongoDB',err);
+})
+---------------------------------------------------------------------------------------------------
+Model : Listing
+1.Title.
+2.Description.
+3.Image.
+4.Price.
+5.Location.
+6.Country.
+---------------------------------------------------------------------------------------------------
+First Creating A Model(Schema) Name As "listing.js" :-
+const mongoose= require('mongoose');
+const Schema=mongoose.Schema;
+
+const listingSchema=new Schema({
+    title:{
+        type:String,
+        required:true,
+    },
+    description:String,
+    image:{
+        type:String,
+        default:'https://unsplash.com/photos/wooden-house-near-pine-trees-and-pond-coated-with-snow-during-daytime-OgcJIKRnRC8',
+        set:(v)=>
+            v===""?
+            'https://unsplash.com/photos/wooden-house-near-pine-trees-and-pond-coated-with-snow-during-daytime-OgcJIKRnRC8'
+            :v,
+    },
+    price:Number,
+    location:String,
+    country:String
+});
+const Listing=mongoose.model('Listing',listingSchema);
+module.exports=Listing;
+---------------------------------------------------------------------------------------------------
+Here For Testing We are Creating A Init Folder If The Database Is Empty Then These Folder Plays A
+Important Role.
+1.data.js :-
+const sampleListings = 
+[
+    {
+      title: "Cozy Beachfront Cottage",
+      description:
+        "Escape to this charming beachfront cottage for a relaxing getaway. Enjoy stunning ocean views and easy access to the beach.",
+      image: 
+        "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      price: 1500,
+      location: "Malibu",
+      country: "United States",
+    },
+    {
+      title: "Modern Loft in Downtown",
+      description:
+        "Stay in the heart of the city in this stylish loft apartment. Perfect for urban explorers!",
+      image:
+        "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      price: 1200,
+      location: "New York City",
+      country: "United States",
+    },
+    {
+      title: "Mountain Retreat",
+      description:
+        "Unplug and unwind in this peaceful mountain cabin. Surrounded by nature, it's a perfect place to recharge.",
+      image:
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      price: 1000,
+      location: "Aspen",
+      country: "United States",
+    },
+    {
+      title: "Historic Villa in Tuscany",
+      description:
+        "Experience the charm of Tuscany in this beautifully restored villa. Explore the rolling hills and vineyards.",
+      image: 
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      price: 2500,
+      location: "Florence",
+      country: "Italy",
+    },
+    {
+      title: "Secluded Treehouse Getaway",
+      description:
+        "Live among the treetops in this unique treehouse retreat. A true nature lover's paradise.",
+      image: 
+       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      price: 800,
+      location: "Portland",
+      country: "United States",
+    },
+    {
+      title: "Beachfront Paradise",
+      description:
+        "Step out of your door onto the sandy beach. This beachfront condo offers the ultimate relaxation.",
+      image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      price: 2000,
+      location: "Cancun",
+      country: "Mexico",
+    },
+    {
+      title: "Rustic Cabin by the Lake",
+      description:
+        "Spend your days fishing and kayaking on the serene lake. This cozy cabin is perfect for outdoor enthusiasts.",
+      image: 
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1vdW50YWlufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      price: 900,
+      location: "Lake Tahoe",
+      country: "United States",
+    },
+    {
+      title: "Luxury Penthouse with City Views",
+      description:
+        "Indulge in luxury living with panoramic city views from this stunning penthouse apartment.",
+      image:
+        "https://images.unsplash.com/photo-1622396481328-9b1b78cdd9fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2t5JTIwdmFjYXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+      price: 3500,
+      location: "Los Angeles",
+      country: "United States",
+    },
+    {
+      title: "Ski-In/Ski-Out Chalet",
+      description:
+        "Hit the slopes right from your doorstep in this ski-in/ski-out chalet in the Swiss Alps.",
+      image:
+        "https://images.unsplash.com/photo-1502784444187-359ac186c5bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNreSUyMHZhY2F0aW9ufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      price: 3000,
+      location: "Verbier",
+      country: "Switzerland",
+    },
+    {
+      title: "Safari Lodge in the Serengeti",
+      description:
+        "Experience the thrill of the wild in a comfortable safari lodge. Witness the Great Migration up close.",
+      image:
+        "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fG1vdW50YWlufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      price: 4000,
+      location: "Serengeti National Park",
+      country: "Tanzania",
+    },
+];
+module.exports = { data: sampleListings };
+---------------------------------------------------------------------------------------------------
+2.index.js :-
+const mongoose = require('mongoose');
+const initData=require("./data.js");
+const Listing = require('../models/listing.js');
+
+const MONGO_URL='mongodb://127.0.0.1:27017/wanderlust';
+async function main(){
+    await mongoose.connect(MONGO_URL);
+}
+main().then(()=>{
+    console.log('Connected To MongoDB');
+}).catch((err)=>{
+    console.error('Error Connecting To MongoDB',err);
+})
+
+const initDB= async()=>{
+    await Listing.deleteMany({});
+    await Listing.insertMany(initData.data);
+    console.log('Database Initialized');
+}
+initDB();
+---------------------------------------------------------------------------------------------------
+Creating Folder Name As "views/listings" :-
+1.index.ejs :-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust</title>
+</head>
+<body>
+    <h3>All Listings</h3>
+    <form method="GET" action="/listings/new">
+        <button>Create New Listing</button>
+    </form>
+    <%for(let i=0;i<allListing.length;i++){%>
+        <li >
+         <a href="/listings/<%=allListing[i]._id%>"> <%= allListing[i].title %></a>
+        </li>
+     <%}%>
+     </ul>
+</body>
+</html>
+---------------------------------------------------------------------------------------------------
+2.edit.ejs :-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust</title>
+</head>
+<body>
+    <h3>Edit Your Listing</h3>
+    <form method="POST" action="/listings/<%=listing._id%>?_method=PUT">
+        <input name="listing[title]" value="<%=listing.title%>" type="text">
+        <br><br><br>
+        <textarea name="listing[description]"><%=listing.description%></textarea>
+        <br><br><br>
+        <input name="listing[image]" value="<%=listing.image%>" type="text">
+        <br><br><br>
+        <input name="listing[price]" value="<%=listing.price%>"  type="number">
+        <br><br><br>
+        <input name="listing[country]" value="<%=listing.country%>"  type="text">
+        <br><br><br>
+        <input name="listing[location]" value="<%=listing.location%>"  type="text">
+        <br><br><br>
+        <button>Edit</button>
+    </form>
+</body>
+</html>
+---------------------------------------------------------------------------------------------------
+3.new.ejs :-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust</title>
+</head>
+<body>
+    <h3>Create A New Listing</h3>
+    <form method="POST" action="/listings">
+        <input name="listing[title]" placeholder="Enter Title" type="text">
+        <br><br><br>
+        <textarea name="listing[description]" placeholder="Enter Description"></textarea>
+        <br><br><br>
+        <input name="listing[image]" placeholder="Enter image URL/Link"  type="text">
+        <br><br><br>
+        <input name="listing[price]" placeholder="Enter Price" type="number">
+        <br><br><br>
+        <input name="listing[country]" placeholder="Enter Country"  type="text">
+        <br><br><br>
+        <input name="listing[location]" placeholder="Enter Location" type="text">
+        <br><br><br>
+        <button>Add</button>
+    </form>
+</body>
+</html>
+---------------------------------------------------------------------------------------------------
+4.show.ejs :-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust</title>
+</head>
+<body>
+    <h3>Listing Details</h3>
+    <ul>
+        <li><%=listing.title%></li>
+        <li><%=listing.description%></li>
+        <li>&#8377;<%=listing.price.toLocaleString("en-IN")%></li>
+        <li><%=listing.location%></li>
+        <li><%=listing.country%></li>
+    </ul>
+    <br>
+    <a href="/listings/<%= listing._id %>/edit">Edit This Listing</a>
+    <br><br><br>
+    <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+        <button>Delete This Listing</button>
+    </form>
+</body>
+</html>
+---------------------------------------------------------------------------------------------------
+After Creating A views Then Create A app.js
+app.get('/listings',async(req,res)=>{
+    const allListing = await Listing.find({});
+    res.render("listings/index.ejs",{allListing});
+});
+
+//New Route
+app.get('/listings/new',(req,res)=>{
+    res.render("listings/new.ejs");
+})
+
+//Show Route
+app.get('/listings/:id',async(req,res)=>{
+    let {id}=req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs",{listing});
+});
+
+//Create Route
+app.post('/listings',async(req,res)=>{
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect('/listings');
+});
+
+//Edit Route
+app.get('/listings/:id/edit',async(req,res)=>{
+    let {id}=req.params;
+    const listing=await Listing.findById(id);
+    res.render('listings/edit.ejs',{listing});
+});
+
+//Update Route
+app.put('/listings/:id',async(req,res)=>{
+    let {id}=req.params;
+        let updatedList=await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    console.log('Updated Successfully',updatedList);
+    res.redirect(`/listings/${id}`);
+});
+
+//Delete Route
+app.delete('/listings/:id',async(req,res)=>{
+    let {id}=req.params;
+    let DeletedList=await Listing.findByIdAndDelete(id);
+    console.log('Deleted Successfully',DeletedList);
+    res.redirect('/listings');
+});
+---------------------------------------------------------------------------------------------------
+What Is "EJS Mate" ?
+It Is Used For Creating A Multiple Or Common EJS Template.
+Creating A layout Folder In views Folder For Creating A boilerplate.ejs.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h1>This Is My Travel Website</h1>
+    <div class="container"> <%- body -%></div>
+</body>
+</html>
+
+Usage :-
+<% layout('boilerplate') -%>
+---------------------------------------------------------------------------------------------------
+Creating NavBar :-
+
+
+Creating Footer :-
+---------------------------------------------------------------------------------------------------
+Form Validation :-
+  When We Enter Data In The Form, The Browser And / Or Web Server Will Check To See That The Data Is
+In The Correct Format And Within The Constraints Set By The Application.  
+Two Types Of Validation :-
+1.Client
+2.Server
+Custom WrapAsync :-
+---------------------------------------------------------------------------------------------------
+New Model :- Reviews
+1.Comment
+2.rating (1 To 5)
+3.CreatedAt
+---------------------------------------------------------------------------------------------------
+Mongo $pull operator :-
+The $pull operator removes from an existing array all instances of a value or values that match a 
+specified condition.
+---------------------------------------------------------------------------------------------------
+Express Router :-
+Express Router Are A Way To Organize Your Express Application Such That Our Primary app.js File Does Not
+Become Bulkiness.
+Syntax:-
+const router=express.Router();
+---------------------------------------------------------------------------------------------------
+Cookies :-
+Web Cookies :-
+HTTP cookies Are Small Blocks Of Data Created By A Web Server While A User Is Browsing A Website And Placed On The
+User's Computer Or Other Device By The User's Web Browser.
+---------------------------------------------------------------------------------------------------
+How To Send Cookies ?
+In Express :-
+app.get('/setcookies',(req,res)=>{
+  res.cookie('name','WanderLust');
+  res.cookie('Technology','MERN');
+  res.send('Cookies Set');
+})
+---------------------------------------------------------------------------------------------------
+Cookies Parser
+Install Package :-
+npm install cookie-parser
+Code :-
+const cookieParser=require("cookie-parser");
+app.use(cookieParser());
+app.get('/getcookies',(req,res)=>{
+  console.dir(req.cookies);
+  res.send('Got The Cookies');
+})
+app.get('/getcookies',(req,res)=>{
+  let{name='anonymous'}=req.cookies;
+  res.send(`Hello ${name}`);
+})
+---------------------------------------------------------------------------------------------------
+Signed Cookies :-
+Send Signed Cookie :-
+app.use(cookieParser('secretcode'));
+app.get('getsignedcookies',(req,res)=>{
+  res.cookie('name','WanderLust',{signed:true});
+  res.send('Signed Cookies Sent');
+})
+Verify Signed Cookies :-
+app.get('/verify',(req,res)=>{
+  res.send(req.signedCookies)
+})
+---------------------------------------------------------------------------------------------------
+Using Flash :-
+Success Partial
+Error Partial
+---------------------------------------------------------------------------------------------------
+//IMPORTANT CONCEPT FOR ALL WEB-SITE.
+Authentication v/s Authorization :-
+Authentication :-
+  Authentication Is The Process Of Verifying Who Someone Is.
+Authorization :-
+  Authorization Is A Process Of Verifying What Specific Application, Files, And Data
+A User Has Access To.
+---------------------------------------------------------------------------------------------------
+Storing Passwords :-
+We "NEVER" Store The Passwords As It Is.
+We Store Their Hashed Form.
+Example :-
+
+Password     -------->  Hashing  --------> How It Is Stored :-
+"helloworld" -------->  Function --------> "7b91cf1e312a84544a3d5f82ce965daf5620579a4a5e7d37b90829238a2f1055"
+
+Hashing :-
+What We Need To Know ?
+1.For Every Input, There Is A Fixed Output.
+2.They Are One-Way Functions,We Can't Get From Output.
+3.For A Different Input,There Is A Different Output But Of Same Length.
+4.Small Changes In Input Should Bring Large Changes In Output.
+
+Example :-
+math.abs(-5);
+->5
+math.abs(5);
+->5
+
+Well Known Hashing Algorithm :-
+1.SHA256 (Secure Hash Algorithm 256-bit)
+2.MD5 (Message-Digest Algorithm 5)
+3.CRC (cyclic redundancy check)
+4.bcrypt. :- 
+1.BCrypt is a password hashing algorithm that's designed to be slow and resistant to brute-force attacks. 
+2.It's considered one of the most secure and reliable password-hashing algorithms.
+---------------------------------------------------------------------------------------------------
+Salting :-
+  Password Salting Is A Technique To Protect Password Stored In Database By Adding A String Of 32 Or 
+More Characters And Then Hashing Them.
+---------------------------------------------------------------------------------------------------
+Well-Known Authentication In Node.js It Basically Used For Authenticate The User 
+& Login Via Facebook and Google.
+
+Hashing Algorithm :-
+Passport Used The pbkdf2(Password-Based Key Derivation Function 2)(Is a Cryptographic Algorithm that 
+makes it harder to guess hashed passwords) Hashing Algorithm.
+
+Link :-
+https://www.passportjs.org/
+---------------------------------------------------------------------------------------------------
+Passport :-
+1.npm i passport
+2.npm i passport-local
+3.npm i passport-local-mongoose(Optional Because When Used Mongoose Database It's Help.)
+---------------------------------------------------------------------------------------------------
+Default :-
+You Are Free To Define Your User How You Like.Passport Local Mongoose Will Add A Username,Hash And
+Salt To Store The Username,The Hashed Password And The Salt Value.
+---------------------------------------------------------------------------------------------------
+Configuring Strategy :-
+passport.initialize() :-
+A Middleware that initialize passport.
+
+passport.session() :-
+A Web Application Needs The Ability To Identify Users As They Browse From Page To Page.
+This Series of requests And Response,Each Associated With The Same User,Is Known As A session.
+
+passport.use(new LocalStrategy(User.Authenticate()));
+
+//Generates a function that is used by Passport to serialize(Store User Data)users into the session.
+passport.serializeUser(User.serializeUser());
+
+// Generates a function that is used by Passport to deserialize(Remove User Data)users into the session.
+passport.deserializeUser(User.deserializeUser());
+---------------------------------------------------------------------------------------------------
+Static Methods :-
+register(user, password, cb):-
+1.Convenience method to register a new user instance with a given password.
+2.Checks if username is unique.
+---------------------------------------------------------------------------------------------------
+SignUp User :-
+GET /signup
+POST /signup
+---------------------------------------------------------------------------------------------------
+Login User :-
+GET /login
+POST /login
+---------------------------------------------------------------------------------------------------
+Navbar With Option (SignUp, login,logout) :-
+<div class="navbar-nav ms-auto">
+  <% if(!currUser){ %>
+   <a class="nav-link" href="/signup"><b>SignUp</b></a>
+   <a class="nav-link" href="/login"><b>Login</b></a>
+  <% } %>
+  <% if(currUser){ %>
+    <a class="nav-link" href="/logout"><b>Logout</b></a>
+  <% } %>
+</div>
+---------------------------------------------------------------------------------------------------
+Login After SignUp :-
+Passport's Login Method Automatically Established A Login Session.
+We Can Invoke Login To Automatically Login A User.
+---------------------------------------------------------------------------------------------------
+MVC :- 
+Model,View,Controller
+* Implements Design Pattern For Listings.
+Model :- Database Model
+View :- Ejs Template.
+Controller :- Routers.
+---------------------------------------------------------------------------------------------------
+Doubt With Answer
+1.req.body.listing :-
+is used when you want to retrieve form data that was submitted by the user.
+Example :-
+title, description, price, country, location.
+---------------------------------------------------------------------------------------------------
+2.req.params: 
+This accesses route parameters defined in the URL, such as :id in the route path.
+-In that case u send the id in the url
+To select the specific listing or user or something else
+Example :-
+id.
+Used When :-
+Update And Delete Query.
+---------------------------------------------------------------------------------------------------

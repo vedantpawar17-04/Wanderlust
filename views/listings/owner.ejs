@@ -1,0 +1,46 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<link rel="stylesheet" href="/css/index.css">
+
+<div class="container mt-4">
+    <div class="header-container mb-2">
+        <h1 class="listing-heading">
+            <% if (owner) { %>
+                <i class="fas fa-user-circle me-2 mb-4"></i> Listings by <%= owner.username %>
+            <% } else { %>
+                <i class="fas fa-list me-2"></i> Owner Listings
+            <% } %>
+        </h1>
+        <a href="javascript:history.back()" class="btn btn-outline-black rounded-pill m-2 p-2">
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </a>
+    </div>
+
+    <% if (ownerListings && ownerListings.length > 0) { %>
+        <div class="row listing-card-row">
+            <% for(let listing of ownerListings) { %>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card listing-card">
+                        <img src="<%= listing.image.url %>" class="card-img-top listing-image" alt="<%= listing.title %>">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= listing.title %></h5>
+                            <p class="location">
+                                <i class="fas fa-map-marker-alt me-1"></i> 
+                                <%= listing.location %>
+                            </p>
+                            <p class="price">₹<%= listing.price.toLocaleString("en-US") %><span class="text-muted">/night</span></p>
+                            <a href="/listings/<%= listing._id %>" class="btn btn-outline-success btn-sm view-listing-btn">
+                                <i class="fas fa-eye me-1"></i> View Listing
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="empty-state text-center p-5 bg-light rounded-3">
+            <i class="fas fa-home fs-1 text-muted mb-3"></i>
+            <h5 class="mb-3">No listings found</h5>
+            <p class="text-muted mb-0">This owner hasn't posted any listings yet.</p>
+        </div>
+    <% } %>
+</div> 

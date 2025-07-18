@@ -1,0 +1,188 @@
+<% layout('/layouts/boilerplate') -%>
+
+<!-- Decorative Background Pattern -->
+<div class="position-fixed w-100 h-100" style="top: 0; left: 0; pointer-events: none !important; z-index: -10;">
+  <div class="position-absolute" style="top: -5%; right: -5%; width: 600px; height: 600px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(198, 153, 99, 0.1), rgba(26, 54, 93, 0.1)); filter: blur(80px);"></div>
+  <div class="position-absolute" style="bottom: -10%; left: -10%; width: 800px; height: 800px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(26, 54, 93, 0.1), rgba(198, 153, 99, 0.1)); filter: blur(120px);"></div>
+  
+  <!-- Decorative Icons -->
+  <div class="position-absolute text-primary" style="top: 15%; left: 15%; opacity: 0.05; font-size: 5rem; pointer-events: none !important;">
+    <i class="fa-solid fa-mountain"></i>
+  </div>
+  <div class="position-absolute text-primary" style="bottom: 20%; right: 10%; opacity: 0.05; font-size: 6rem; pointer-events: none !important;">
+    <i class="fa-solid fa-compass"></i>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7 col-sm-10">
+      <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+        <div class="card-header text-center border-0 bg-primary text-white py-4">
+          <h3 class="mb-0"><i class="fa-solid fa-right-to-bracket me-2"></i>Welcome Back</h3>
+          <p class="text-white-50 mt-2 mb-0">Login to access your Wanderlust account</p>
+        </div>
+        
+        <div class="card-body p-4 p-md-5">
+          <form action="/login" 
+                method="POST" 
+                class="needs-validation" 
+                novalidate
+                autocomplete="off">
+            <div class="mb-4">
+              <label for="username" class="form-label fw-bold">Username</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                <input name="username" 
+                       id="username" 
+                       type="text" 
+                       class="form-control" 
+                       placeholder="Enter your username" 
+                       pattern="^[a-zA-Z][a-zA-Z0-9]{4,}$"
+                       minlength="5"
+                       maxlength="30"
+                       required> 
+              </div>
+              <div id="usernameSuggestion" class="form-text mt-1 small text-danger"></div>
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Please enter a valid username</div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password" class="form-label fw-bold">Password</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                <input name="password" 
+                       id="password" 
+                       type="password" 
+                       class="form-control" 
+                       placeholder="Enter your password"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,14}$"
+                       minlength="8"
+                       maxlength="14"
+                       required> 
+                <button class="btn btn-outline-secondary" 
+                        type="button" 
+                        id="togglePassword"
+                        aria-label="Toggle password visibility"
+                        title="Toggle password visibility">
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div id="passwordSuggestion" class="form-text mt-1 small text-danger"></div>
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Please enter your password</div>
+            </div>
+            
+            <button class="btn btn-primary w-100 py-2 mt-4">
+              <i class="fa-solid fa-sign-in-alt me-2"></i>Login
+            </button>
+          </form>
+      </div>
+    </div>
+    </div>
+</div>
+    
+      <!-- Travel Illustration -->
+      <div class="text-center mt-4">
+        <p class="text-muted small">
+          <i class="fa-solid fa-map-location-dot me-1"></i>
+          Continue your journey to amazing destinations
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add validation script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const usernameSuggestion = document.getElementById('usernameSuggestion');
+    const passwordSuggestion = document.getElementById('passwordSuggestion');
+
+    // Username validation with suggestions
+    usernameInput.addEventListener('input', function() {
+        const value = this.value.trim();
+        let suggestion = '';
+
+        if (value.length > 0) {
+            if (!/^[a-zA-Z]/.test(value)) {
+                suggestion = 'Username must start with a letter';
+            } else if (value.length < 5) {
+                suggestion = 'Username must be at least 5 characters long';
+            } else if (value.length > 10) {
+                suggestion = 'Username exceeds maximum limit of 10 characters';
+            }
+        }
+
+        usernameSuggestion.textContent = suggestion;
+        this.classList.toggle('is-valid', suggestion === '' && value.length > 0);
+        this.classList.toggle('is-invalid', suggestion !== '' && value.length > 0);
+    });
+
+    // Password validation with suggestions
+    passwordInput.addEventListener('input', function() {
+        const value = this.value;
+        let suggestions = [];
+
+        if (value.length > 0) {
+            if (value.length < 8) {
+                suggestions.push('Password must be at least 8 characters long');
+            } else if (value.length > 14) {
+                suggestions.push('Password exceeds maximum limit of 14 characters');
+            }
+            if (!/[A-Z]/.test(value)) {
+                suggestions.push('Missing uppercase letter');
+            }
+            if (!/[a-z]/.test(value)) {
+                suggestions.push('Missing lowercase letter');
+            }
+            if (!/\d/.test(value)) {
+                suggestions.push('Missing number');
+            }
+            if (!/[@$!%*?&]/.test(value)) {
+                suggestions.push('Missing special character (@$!%*?&)');
+            }
+        }
+
+        passwordSuggestion.textContent = suggestions.join(', ');
+        this.classList.toggle('is-valid', suggestions.length === 0 && value.length > 0);
+        this.classList.toggle('is-invalid', suggestions.length > 0 && value.length > 0);
+    });
+
+    // Password visibility toggle
+    const togglePassword = document.getElementById('togglePassword');
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+
+        // Auto-hide after 5 seconds if visible
+        if (type === 'text') {
+            setTimeout(() => {
+                passwordInput.setAttribute('type', 'password');
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }, 5000);
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+

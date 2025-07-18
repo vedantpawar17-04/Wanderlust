@@ -1,0 +1,402 @@
+<%# Listings Search Results Page %>
+<% layout('/layouts/boilerplate') -%>
+<link rel="stylesheet" href="/css/index.css">
+
+<div class="container listings-container mt-4">
+    <% if (!searchQuery || searchQuery.trim() === '') { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            Please enter a search location
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="text-center mt-5">
+            <div class="mb-4">
+                <i class="fa-solid fa-magnifying-glass fs-1 text-muted"></i>
+            </div>
+            <h3 class="mb-3">No Search Location Provided</h3>
+            <p class="text-muted mb-4">Please enter a location to search for listings.</p>
+            <a href="/listings" class="btn btn-outline-dark rounded-pill px-4">
+                <i class="fa-solid fa-arrow-left me-2"></i>Back to All Listings
+            </a>
+        </div>
+    <% } else if (searchResults && searchResults.length > 0) { %>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="listings-header mb-0">Search Results for "<%= searchQuery %>"</h5>
+            <button class="btn btn-filter" type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#filterCollapse" 
+                    aria-expanded="false" 
+                    aria-controls="filterCollapse"
+                    data-bs-toggle="popover"
+                    data-bs-content="Click to show/hide filter options"
+                    data-bs-placement="left">
+                <i class="fa-solid fa-sliders me-2"></i>Filters
+            </button>
+        </div>
+
+        <%# Filter Section %>
+        <div class="filter-container mb-4">
+            <div class="collapse" id="filterCollapse">
+                <div class="filter-card bg-white p-4">
+                    <form id="filterForm" action="/listings/search" method="GET">
+                        <input type="hidden" name="q" value="<%= searchQuery %>">
+                        
+                        <div class="row g-3">
+                            <%# Country/Region dropdown filter %>
+                            <div class="col-md-4">
+                                <div class="filter-group">
+                                    <label class="d-flex align-items-center mb-2">
+                                        <i class="fa-solid fa-globe me-2 text-muted"></i>
+                                        <span>Country</span>
+                                        <i class="fa-solid fa-circle-info ms-2 text-muted" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-content="Filter listings by country or region"
+                                           style="cursor: help;"></i>
+                                    </label>
+                                    <select class="form-select" id="country" name="country">
+                                        <option value="all">All Countries</option>
+                                        <% allCountries.forEach(country => { %>
+                                            <option value="<%= country %>" <%= searchParams.country === country ? 'selected' : '' %>>
+                                                <%= country %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <%# Price Range filters %>
+                            <div class="col-md-6">
+                                <div class="filter-group">
+                                    <label class="d-flex align-items-center mb-2">
+                                        <i class="fa-solid fa-indian-rupee-sign me-2 text-muted"></i>
+                                        <span>Price Range</span>
+                                        <i class="fa-solid fa-circle-info ms-2 text-muted" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-content="Set minimum and maximum price per night"
+                                           style="cursor: help;"></i>
+                                    </label>
+                                    <div class="d-flex gap-3">
+                                        <div class="flex-grow-1">
+                                            <input type="number" class="form-control" id="minPrice" name="minPrice" 
+                                                placeholder="Min Price"
+                                                min="<%= priceRange.min %>" 
+                                                max="<%= priceRange.max %>" 
+                                                value="<%= searchParams.minPrice %>"
+                                                data-bs-toggle="popover"
+                                                data-bs-placement="top"
+                                                data-bs-content="Minimum price per night must be greater than 2500"
+                                                data-bs-trigger="focus">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <input type="number" class="form-control" id="maxPrice" name="maxPrice" 
+                                                placeholder="Max Price"
+                                                min="<%= priceRange.min %>" 
+                                                max="<%= priceRange.max %>" 
+                                                value="<%= searchParams.maxPrice %>"
+                                                data-bs-toggle="popover"
+                                                data-bs-placement="top"
+                                                data-bs-content="Maximum price per night must be greater than and equal to 2500"
+                                                data-bs-trigger="focus">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <%# Filter action buttons %>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <div class="d-flex gap-2 w-100">
+                                    <button type="submit" class="btn btn-filter-apply"
+                                            data-bs-toggle="popover"
+                                            data-bs-content="Apply selected filters"
+                                            data-bs-placement="top">
+                                        Apply
+                                    </button>
+                                    <button type="button" 
+                                           class="btn btn-filter-clear"
+                                           data-bs-toggle="popover"
+                                           data-bs-content="Clear all filters"
+                                           data-bs-placement="top"
+                                           onclick="clearFilters()">
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <%# Back to All Listings button %>
+        <div class="text-center mb-4">
+            <a href="/listings" class="btn btn-outline-dark rounded-pill px-4">
+                <i class="fa-solid fa-arrow-left me-2"></i>Back to All Listings
+            </a>
+        </div>
+
+        <%# Active Filters Display %>
+        <% if (searchParams && (searchParams.country !== 'all' || searchParams.minPrice || searchParams.maxPrice)) { %>
+            <div class="active-filters d-flex flex-wrap gap-2 mb-4">
+                <% if (searchParams.country !== 'all') { %>
+                    <div class="filter-badge">
+                        <i class="fa-solid fa-globe me-2"></i>
+                        <%= searchParams.country %>
+                        <a href="/listings/search?q=<%= searchQuery %><%= 
+                            searchParams.minPrice ? '&minPrice=' + searchParams.minPrice : '' %><%= 
+                            searchParams.maxPrice ? '&maxPrice=' + searchParams.maxPrice : '' %>" 
+                            class="filter-remove ms-2">×</a>
+                    </div>
+                <% } %>
+                
+                <% if (searchParams.minPrice) { %>
+                    <div class="filter-badge">
+                        <i class="fa-solid fa-indian-rupee-sign me-2"></i>
+                        Min: ₹<%= searchParams.minPrice %>
+                        <a href="/listings/search?q=<%= searchQuery %><%= 
+                            searchParams.country !== 'all' ? '&country=' + searchParams.country : '' %><%= 
+                            searchParams.maxPrice ? '&maxPrice=' + searchParams.maxPrice : '' %>" 
+                            class="filter-remove ms-2">×</a>
+                    </div>
+                <% } %>
+                
+                <% if (searchParams.maxPrice) { %>
+                    <div class="filter-badge">
+                        <i class="fa-solid fa-indian-rupee-sign me-2"></i>
+                        Max: ₹<%= searchParams.maxPrice %>
+                        <a href="/listings/search?q=<%= searchQuery %><%= 
+                            searchParams.country !== 'all' ? '&country=' + searchParams.country : '' %><%= 
+                            searchParams.minPrice ? '&minPrice=' + searchParams.minPrice : '' %>" 
+                            class="filter-remove ms-2">×</a>
+                    </div>
+                <% } %>
+                
+                <a href="/listings/search?q=<%= searchQuery %>" class="filter-clear">
+                    Clear All
+                </a>
+            </div>
+        <% } %>
+
+        <div class="row g-3">
+            <% const sortedListings = searchResults.sort((a, b) => {
+                const reviewCountA = a.reviews ? a.reviews.length : 0;
+                const reviewCountB = b.reviews ? b.reviews.length : 0;
+                return reviewCountB - reviewCountA;
+            });
+
+            for(let listing of sortedListings) { %>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card listing-cards h-100">
+                        <div class="card-img-container">
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                            <% if (listing.reviews && listing.reviews.length > 0) { %>
+                                <div class="card-img-overlay">
+                                    <span class="badge bg-black float-end">Best Seller</span>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="card-body d-flex flex-column p-3">
+                            <div class="listing-title mb-1"><%= listing.title %></div>
+                            <div class="listing-price mb-2">₹<%= listing.price.toLocaleString('en-IN') %> <span class="fw-normal">/ night</span></div>
+                            <div class="listing-reviews mb-2">
+                                <% if (listing.reviews && listing.reviews.length > 0) { %>
+                                    <i class="fa-solid fa-star text-warning me-1"></i> Reviews: <%= listing.reviews.length %>
+                                <% } else { %>
+                                    <i class="fa-regular fa-star text-secondary me-1"></i> No reviews yet
+                                <% } %>
+                            </div>
+                            <div class="text-muted mb-3">
+                                <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>
+                                <% if (listing.country) { %>, <%= listing.country %><% } %>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary mt-auto view-details-btn" 
+                                    data-id="<%= listing._id %>"
+                                    data-title="<%= listing.title %>"
+                                    data-price="<%= listing.price.toLocaleString('en-IN') %>"
+                                    data-location="<%= listing.location %><% if (listing.country) { %>, <%= listing.country %><% } %>"
+                                    data-image="<%= listing.image.url %>"
+                                    data-reviews="<%= listing.reviews ? listing.reviews.length : 0 %>">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="text-center mt-5">
+            <div class="mb-4">
+                <i class="fa-solid fa-magnifying-glass fs-1 text-muted"></i>
+            </div>
+            <h3 class="mb-3">No listings found matching "<%= searchQuery %>"</h3>
+            <p class="text-muted mb-4">Try searching for a different location or explore our other destinations.</p>
+                <a href="/listings" class="btn btn-outline-dark rounded-pill px-4">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Back to All Listings
+                </a>
+        </div>
+    <% } %>
+</div>
+
+<%# Listing Details Modal %>
+<div class="modal fade" id="listingDetailsModal" tabindex="-1" aria-labelledby="listingDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="listingDetailsModalLabel">Listing Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img id="modalImage" src="" alt="Listing image" class="img-fluid rounded mb-3 w-100" style="height: 250px; object-fit: cover;">
+                    </div>
+                    <div class="col-md-6">
+                        <h4 id="modalTitle"></h4>
+                        <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i><span id="modalLocation"></span></p>
+                        <p class="fs-5"><strong>₹<span id="modalPrice"></span></strong> <span class="text-muted">/ night</span></p>
+                        <p><i class="fas fa-star text-warning me-2"></i><span id="modalReviews"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a id="viewFullDetails" href="" class="btn btn-primary">View Full Details</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize popovers
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'hover focus',
+                placement: 'auto'
+            });
+        });
+
+        // Clear filters function
+        window.clearFilters = function() {
+            // Reset country dropdown
+            document.getElementById('country').value = 'all';
+            
+            // Reset price inputs
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            
+            // Get the current search query
+            const searchQuery = document.querySelector('input[name="q"]').value;
+            
+            // Redirect to the search page with only the search query
+            window.location.href = `/listings/search?q=${encodeURIComponent(searchQuery)}`;
+        };
+
+        // Get all view details buttons
+        const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+        
+        // Add click event to each button
+        viewDetailsButtons.forEach(button => {
+            // Single click opens modal
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const id = this.getAttribute('data-id');
+                const title = this.getAttribute('data-title');
+                const price = this.getAttribute('data-price');
+                const location = this.getAttribute('data-location');
+                const image = this.getAttribute('data-image');
+                const reviews = this.getAttribute('data-reviews');
+                
+                // Set modal content
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalLocation').textContent = location;
+                document.getElementById('modalPrice').textContent = price;
+                document.getElementById('modalImage').src = image;
+                document.getElementById('viewFullDetails').href = `/listings/${id}`;
+                
+                // Set reviews text
+                const reviewsCount = parseInt(reviews);
+                if (reviewsCount > 0) {
+                    document.getElementById('modalReviews').textContent = `${reviewsCount} Reviews`;
+                } else {
+                    document.getElementById('modalReviews').textContent = 'No reviews yet';
+                }
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('listingDetailsModal'));
+                modal.show();
+            });
+            
+            // Double click goes straight to details page
+            button.addEventListener('dblclick', function() {
+                const id = this.getAttribute('data-id');
+                window.location.href = `/listings/${id}`;
+            });
+        });
+        
+        // Make the entire card clickable to go to listing details
+        const cards = document.querySelectorAll('.listing-cards');
+        cards.forEach(card => {
+            card.addEventListener('dblclick', function() {
+                const id = this.querySelector('.view-details-btn').getAttribute('data-id');
+                window.location.href = `/listings/${id}`;
+            });
+        });
+    });
+</script>
+
+<style>
+    .btn-filter {
+        background-color: #fff;
+        color: #222;
+        border: 1px solid #dddddd;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    .btn-filter:hover {
+        border-color: #222;
+        background-color: #f7f7f7;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-dark {
+        background-color: #222;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-dark:hover {
+        background-color: #000;
+    }
+
+    .btn-outline-dark {
+        color: #222;
+        border: 1px solid #222;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background-color: transparent;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #222;
+        color: white;
+    }
+
+    .filter-card {
+        border: 1px solid #dddddd;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+</style>

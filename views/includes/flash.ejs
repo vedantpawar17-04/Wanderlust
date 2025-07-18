@@ -1,0 +1,154 @@
+<%# 
+  Enhanced Flash Messages Component
+  Displays stylish notification messages with animations, icons, and progress bars
+%>
+
+<%- include('noscript') %>
+
+<div class="flash-container">
+    <% if(success && success.length) { %>
+        <div class="flash-message success" role="alert">
+            <div class="flash-content">
+                <i class="bi bi-check-lg"></i>
+                <span><%= success %></span>
+                <button type="button" class="flash-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="flash-progress"></div>
+        </div>
+    <% } %>
+    
+    <% if(error && error.length) { %>
+        <div class="flash-message error" role="alert">
+            <div class="flash-content">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span><%= error %></span>
+                <button type="button" class="flash-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="flash-progress"></div>
+        </div>
+    <% } %>
+</div>
+
+<style>
+.flash-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 90%;
+    z-index: 9999;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out;
+}
+
+.flash-message.success {
+    background-color: #ebf7ed;
+    border: 1px solid #34c759;
+}
+
+.flash-message.error {
+    background-color: #fef1f2;
+    border: 1px solid #ff3b30;
+}
+
+.flash-content {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.flash-content i {
+    font-size: 1.2rem;
+}
+
+.flash-message.success i:first-child {
+    color: #34c759;
+}
+
+.flash-message.error i:first-child {
+    color: #ff3b30;
+}
+
+.flash-content span {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #1c1c1e;
+}
+
+.flash-close {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #8e8e93;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.flash-close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1c1c1e;
+}
+
+.flash-progress {
+    height: 3px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.flash-message.success .flash-progress::after,
+.flash-message.error .flash-progress::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    animation: progress 5s linear;
+}
+
+.flash-message.success .flash-progress::after {
+    background-color: #34c759;
+}
+
+.flash-message.error .flash-progress::after {
+    background-color: #ff3b30;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach(message => {
+        setTimeout(() => {
+            message.style.animation = 'slideOut 0.3s ease-in forwards';
+            setTimeout(() => message.remove(), 300);
+        }, 5000);
+    });
+});
+</script>
+<!-- ------------------------------------------------------------------------------------------------------------- -->

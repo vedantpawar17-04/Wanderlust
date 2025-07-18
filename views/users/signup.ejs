@@ -1,0 +1,252 @@
+<% layout('/layouts/boilerplate') -%>
+
+<!-- Decorative Background Pattern -->
+<div class="position-fixed w-100 h-100" style="top: 0; left: 0; pointer-events: none !important; z-index: -10;">
+  <div class="position-absolute" style="top: -5%; right: -5%; width: 600px; height: 600px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(198, 153, 99, 0.1), rgba(26, 54, 93, 0.1)); filter: blur(80px);"></div>
+  <div class="position-absolute" style="bottom: -10%; left: -10%; width: 800px; height: 800px; border-radius: 50%; 
+       background: linear-gradient(45deg, rgba(26, 54, 93, 0.1), rgba(198, 153, 99, 0.1)); filter: blur(120px);"></div>
+  
+  <!-- Decorative Icons -->
+  <div class="position-absolute text-primary" style="top: 15%; left: 15%; opacity: 0.05; font-size: 5rem; pointer-events: none !important;">
+    <i class="fa-solid fa-mountain"></i>
+  </div>
+  <div class="position-absolute text-primary" style="bottom: 20%; right: 10%; opacity: 0.05; font-size: 6rem; pointer-events: none !important;">
+    <i class="fa-solid fa-compass"></i>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7 col-sm-10">
+      <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+        <div class="card-header text-center border-0 bg-primary text-white py-4">
+          <h3 class="mb-0"><i class="fa-solid fa-user-plus me-2"></i>Join Wanderlust</h3>
+          <p class="text-white-50 mt-2 mb-0">Create your account to start exploring</p>
+        </div>
+        
+        <div class="card-body p-4 p-md-5">
+          <form action="/signup" 
+                method="POST" 
+                class="needs-validation" 
+                novalidate
+                autocomplete="off">
+            <div class="mb-4">
+              <label for="username" class="form-label fw-bold">Username</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                <input name="username" 
+                       id="username" 
+                       type="text" 
+                       class="form-control" 
+                       placeholder="Choose a username" 
+                       pattern="^[a-zA-Z][a-zA-Z0-9]{2,}$"
+                       minlength="3"
+                       maxlength="30"
+                       required> 
+              </div>
+              <div id="usernameRequirements" class="form-text mt-2 small">
+                Username requirements:
+                <ul class="mb-0 ps-3 mt-1">
+                  <li id="startLetterCheck"><span class="text-danger">✗</span> Must start with a letter</li>
+                  <li id="lengthCheckUser"><span class="text-danger">✗</span> At least 5 characters long</li>
+                  <li id="maxLengthCheck"><span class="text-danger">✗</span> Maximum 10 characters long</li>
+                </ul>
+              </div>
+              <div class="valid-feedback">Username is available!</div>
+              <div class="invalid-feedback">
+                Please choose a valid username that meets all requirements
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="email" class="form-label fw-bold">Email</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                <input name="email" 
+                       id="email" 
+                       type="email" 
+                       class="form-control" 
+                       placeholder="Your email address"
+                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                       required> 
+              </div>
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Please provide a valid email address</div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password" class="form-label fw-bold">Password</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                <input name="password" 
+                       id="password" 
+                       type="password" 
+                       class="form-control" 
+                       placeholder="Create a password"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,14}$"
+                       required> 
+                <button class="btn btn-outline-secondary" 
+                        type="button" 
+                        id="togglePassword" 
+                        aria-label="Toggle password visibility"
+                        title="Toggle password visibility">
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div id="passwordRequirements" class="form-text mt-2 small">
+                Password must contain:
+                <ul class="mb-0 ps-3 mt-1">
+                  <li id="lengthCheck"><span class="text-danger">✗</span> 8-14 characters</li>
+                  <li id="upperCheck"><span class="text-danger">✗</span> At least one uppercase letter</li>
+                  <li id="numberCheck"><span class="text-danger">✗</span> At least one number</li>
+                  <li id="specialCheck"><span class="text-danger">✗</span> At least one special character (@$!%*?&)</li>
+                </ul>
+              </div>
+              <div class="invalid-feedback">Password must meet all requirements</div>
+            </div>
+            
+            <button class="btn btn-primary w-100 py-2 mt-3" type="submit">
+              <i class="fa-solid fa-paper-plane me-2"></i>Sign Up
+            </button>
+          </form>
+          
+          <div class="text-center mt-4">
+            <p class="text-muted mb-0">Already have an account? 
+              <a href="/login" class="text-primary text-decoration-none">Log in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Travel Illustration -->
+      <div class="text-center mt-4">
+        <p class="text-muted small">
+          <i class="fa-solid fa-map-location-dot me-1"></i>
+          Join thousands of travelers exploring beautiful destinations
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Replace the external script with inline JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Disable default validation popup
+  document.querySelector('form').setAttribute('novalidate', true);
+  
+  // Get form elements
+  const form = document.querySelector('form');
+  const usernameInput = document.getElementById('username');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  
+  // Get username requirement elements
+  const startLetterCheck = document.getElementById('startLetterCheck');
+  const lengthCheckUser = document.getElementById('lengthCheckUser');
+  const maxLengthCheck = document.getElementById('maxLengthCheck');
+  
+  // Get password requirement elements
+  const lengthCheck = document.getElementById('lengthCheck');
+  const upperCheck = document.getElementById('upperCheck');
+  const numberCheck = document.getElementById('numberCheck');
+  const specialCheck = document.getElementById('specialCheck');
+  
+  // Username validation
+  usernameInput.addEventListener('input', function() {
+    const value = this.value.trim();
+    
+    // Check starts with letter
+    const startsWithLetter = /^[a-zA-Z]/.test(value);
+    startLetterCheck.innerHTML = `<span class="${startsWithLetter ? 'text-success' : 'text-danger'}">${startsWithLetter ? '✓' : '✗'}</span> Must start with a letter`;
+    
+    // Check minimum length
+    const hasMinLength = value.length >= 5;
+    lengthCheckUser.innerHTML = `<span class="${hasMinLength ? 'text-success' : 'text-danger'}">${hasMinLength ? '✓' : '✗'}</span> At least 5 characters long`;
+    
+    // Check maximum length
+    const hasValidMaxLength = value.length <= 10;
+    maxLengthCheck.innerHTML = `<span class="${hasValidMaxLength ? 'text-success' : 'text-danger'}">${hasValidMaxLength ? '✓' : '✗'}</span> Maximum 10 characters long`;
+    
+    // Update overall validation state
+    const isValid = startsWithLetter && hasMinLength && hasValidMaxLength;
+    this.classList.toggle('is-valid', isValid);
+    this.classList.toggle('is-invalid', !isValid && value.length > 0);
+  });
+  
+  // Password visibility toggle
+  const togglePassword = document.getElementById('togglePassword');
+  togglePassword.addEventListener('click', function(e) {
+    e.preventDefault();
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Toggle icon
+    const icon = this.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+    
+    // Auto-hide password after 5 seconds if visible
+    if (type === 'text') {
+      setTimeout(() => {
+        passwordInput.setAttribute('type', 'password');
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }, 5000);
+    }
+  });
+  
+  // Password validation
+  passwordInput.addEventListener('input', function() {
+    const value = this.value;
+    
+    // Check length
+    const validLength = value.length >= 8 && value.length <= 14;
+    lengthCheck.innerHTML = `<span class="${validLength ? 'text-success' : 'text-danger'}">${validLength ? '✓' : '✗'}</span> 8-14 characters`;
+    
+    // Check uppercase
+    const hasUpper = /[A-Z]/.test(value);
+    upperCheck.innerHTML = `<span class="${hasUpper ? 'text-success' : 'text-danger'}">${hasUpper ? '✓' : '✗'}</span> At least one uppercase letter`;
+    
+    // Check number
+    const hasNumber = /\d/.test(value);
+    numberCheck.innerHTML = `<span class="${hasNumber ? 'text-success' : 'text-danger'}">${hasNumber ? '✓' : '✗'}</span> At least one number`;
+    
+    // Check special character
+    const hasSpecial = /[@$!%*?&]/.test(value);
+    specialCheck.innerHTML = `<span class="${hasSpecial ? 'text-success' : 'text-danger'}">${hasSpecial ? '✓' : '✗'}</span> At least one special character (@$!%*?&)`;
+    
+    // Update overall validation state
+    const isValid = validLength && hasUpper && hasNumber && hasSpecial;
+    this.classList.toggle('is-valid', isValid);
+    this.classList.toggle('is-invalid', !isValid && value.length > 0);
+  });
+  
+  // Email validation
+  emailInput.addEventListener('input', function() {
+    const value = this.value.trim();
+    const isValid = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value);
+    this.classList.toggle('is-valid', isValid);
+    this.classList.toggle('is-invalid', !isValid && value.length > 0);
+  });
+  
+  // Form submission
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const isUsernameValid = usernameInput.classList.contains('is-valid');
+    const isEmailValid = emailInput.classList.contains('is-valid');
+    const isPasswordValid = passwordInput.classList.contains('is-valid');
+    
+    if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
+      event.stopPropagation();
+      this.classList.add('was-validated');
+      return;
+    }
+    
+    // If validation passes, submit the form
+    this.submit();
+  });
+});
+</script>
