@@ -1,0 +1,1 @@
+Wanderlust is a full-stack web application built to help users explore and discover unique vacation stays and rental properties across various locations. The platform provides a smooth and responsive user experience with an intuitive interface for both users and property hosts.
