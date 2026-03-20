@@ -1,4 +1,4 @@
-﻿# WanderLust (Airbnb‑Style Listings Platform)
+# WanderLust (Airbnb‑Style Listings Platform)
 
 A full‑stack web app that lets users discover, list, and review unique stays. Built with Node.js, Express, MongoDB, and server‑side EJS views, the project focuses on clean MVC architecture, secure authentication, and a polished user experience with search, filters, and analytics.
 
