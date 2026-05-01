@@ -75,6 +75,18 @@
               <div class="valid-feedback">Looks good!</div>
               <div class="invalid-feedback">Please enter your password</div>
             </div>
+
+            <div class="mb-4">
+              <label for="role" class="form-label fw-bold">Account Role</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-user-tag"></i></span>
+                <select name="role" id="role" class="form-select" required>
+                  <option value="user" selected>User - Login to review listings</option>
+                  <option value="owner">Owner - Login to manage listings</option>
+                </select>
+              </div>
+              <div class="form-text">Select the same role you used while signing up.</div>
+            </div>
             
             <button class="btn btn-primary w-100 py-2 mt-4">
               <i class="fa-solid fa-sign-in-alt me-2"></i>Login
@@ -185,4 +197,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-

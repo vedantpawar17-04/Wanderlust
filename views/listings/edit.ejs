@@ -9,7 +9,7 @@
                 <form method="POST" action="/listings/<%=listing._id%>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="title" class="form-label fw-bold">Title</label>
-                        <input name="listing[title]" value="<%=listing.title%>" type="text" class="form-control"  placeholder="Give your place a name">
+                        <input name="listing[title]" value="<%=listing.title%>" type="text" class="form-control" placeholder="Give your place a name">
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -37,11 +37,12 @@
                     
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <label for="price" class="form-label fw-bold">Price (per night)</label>
+                            <label for="price" class="form-label fw-bold">Price</label>
                             <div class="input-group">
-                                <span class="input-group-text">₹</span>
+                                <span class="input-group-text">Rs.</span>
                                 <input name="listing[price]" value="<%=listing.price%>" type="number" class="form-control" required min="0" max="100000">
                             </div>
+                            <div class="form-text">This amount is shown for the stay duration below.</div>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -50,15 +51,31 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-8">
-                            <label for="country" class="form-label fw-bold">Country</label>
-                            <input name="listing[country]" value="<%=listing.country%>" type="text" class="form-control"  placeholder="Country">
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
+                        <div class="col-md-4">
+                            <label for="stayDays" class="form-label fw-bold">Days</label>
+                            <input name="listing[stayDays]" value="<%=listing.stayDays || 1%>" type="number" class="form-control" required min="1" max="365">
                             <div class="invalid-feedback">
-                                Please enter the country name.
+                                Please enter valid number of days.
                             </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="stayNights" class="form-label fw-bold">Nights</label>
+                            <input name="listing[stayNights]" value="<%=listing.stayNights || 1%>" type="number" class="form-control" required min="1" max="365">
+                            <div class="invalid-feedback">
+                                Please enter valid number of nights.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="country" class="form-label fw-bold">Country</label>
+                        <input name="listing[country]" value="<%=listing.country%>" type="text" class="form-control" placeholder="Country">
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter the country name.
                         </div>
                     </div>
 

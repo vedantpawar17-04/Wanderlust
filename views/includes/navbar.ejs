@@ -234,7 +234,7 @@
         <i class="fa-solid fa-info-circle me-2"></i>About Us
       </a>
       <% if(!currUser) { %>
-        <a class="btn btn-outline-dark" href="/listings/new">
+        <a class="btn btn-outline-dark" href="/signup">
           <i class="fa-solid fa-plus me-2"></i>Host your home
         </a>
         <a class="btn btn-outline-dark" href="/signup">
@@ -243,10 +243,28 @@
         <a class="btn btn-outline-dark" href="/login">
           <i class="fa-solid fa-sign-in-alt me-2"></i>Log in
         </a>
-      <% } else { %>
-        <a class="btn btn-outline-dark" href="/listings/new">
-          <i class="fa-solid fa-plus me-2"></i>Host your home
+        <% } else { %>
+        <a class="btn btn-outline-dark" href="/notifications">
+          <i class="fa-solid fa-bell me-2"></i>Notifications
+          <% if(unreadNotificationsCount > 0) { %>
+            <span class="badge rounded-pill bg-danger ms-2"><%= unreadNotificationsCount %></span>
+          <% } %>
         </a>
+        <% if(currUser.role === 'owner') { %>
+          <a class="btn btn-outline-dark" href="/listings/new">
+            <i class="fa-solid fa-plus me-2"></i>Host your home
+          </a>
+          <a class="btn btn-outline-dark" href="/bookings/owner">
+            <i class="fa-solid fa-calendar-check me-2"></i>Reservations
+          </a>
+        <% } else if(currUser.role === 'user') { %>
+          <a class="btn btn-outline-dark" href="/bookings/guest">
+            <i class="fa-solid fa-suitcase-rolling me-2"></i>My Trips
+          </a>
+          <a class="btn btn-outline-dark" href="/wishlist">
+            <i class="fa-solid fa-heart me-2"></i>Wishlist
+          </a>
+        <% } %>
         <a class="btn btn-outline-dark" href="/profile">
           <i class="fa-regular fa-user me-2"></i>Profile
         </a>
@@ -306,39 +324,62 @@
         <%# Right Side Navigation %>
         <div class="navbar-nav ms-auto">
           <% if(!currUser) { %>
-            <a class="btn btn-black mr-2 me-2" href="/listings/new">
+            <a class="btn btn-black mr-2 me-2" href="/signup">
               <i class="fa-solid fa-plus me-1"></i>Host your home
             </a>
             <a class="btn btn-sign-up btn-black me-1" href="/signup">Sign up</a>
             <a class="btn btn-log-in btn-black" href="/login">Log in</a>
           <% } else { %>
             <%# User Dropdown %>
-            <div class="dropdown">
-              <button class="btn btn-light rounded-pill d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-bars me-2"></i>
-                <span class="d-flex align-items-center">
-                  <i class="fa-regular fa-user me-2"></i>
-                  <%= currUser.username %>
-                </span>
-              </button>
-              <div class="dropdown-menu dropdown-menu-end mt-2">
-                <a class="dropdown-item" href="/listings/new">
-                  <i class="fa-solid fa-plus me-2 btn-light"></i>Host your home
-                </a>
-                <a class="dropdown-item" href="/profile">
-                  <i class="fa-regular fa-user me-2 btn-light"></i>Profile
-                </a>
-                <% if(userListings && userListings.length> 0) { %>
-                  <a class="dropdown-item" href="/listings/owner/<%= currUser._id %>">
-                    <i class="fa-solid fa-list me-2 btn-light"></i>My Listings
-                  </a>
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-light rounded-pill position-relative d-flex align-items-center justify-content-center" href="/notifications" aria-label="Notifications" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <% if(unreadNotificationsCount > 0) { %>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <%= unreadNotificationsCount %>
+                  </span>
                 <% } %>
-                <div class="dropdown-divider"></div>
-                <form action="/logout" method="POST" class="m-0">
-                  <button class="dropdown-item text-danger">
-                    <i class="fa-solid fa-right-from-bracket me-2 btn-light"></i>Logout
-                  </button>
-                </form>
+              </a>
+
+              <div class="dropdown">
+                <button class="btn btn-light rounded-pill d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                  <i class="fa-solid fa-bars me-2"></i>
+                  <span class="d-flex align-items-center">
+                    <i class="fa-regular fa-user me-2"></i>
+                    <%= currUser.username %>
+                  </span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end mt-2">
+                  <% if(currUser.role === 'owner') { %>
+                    <a class="dropdown-item" href="/listings/new">
+                      <i class="fa-solid fa-plus me-2 btn-light"></i>Host your home
+                    </a>
+                  <a class="dropdown-item" href="/bookings/owner">
+                    <i class="fa-solid fa-calendar-check me-2 btn-light"></i>Reservations
+                  </a>
+                <% } else if(currUser.role === 'user') { %>
+                    <a class="dropdown-item" href="/bookings/guest">
+                      <i class="fa-solid fa-suitcase-rolling me-2 btn-light"></i>My Trips
+                    </a>
+                    <a class="dropdown-item" href="/wishlist">
+                      <i class="fa-solid fa-heart me-2 btn-light"></i>Wishlist
+                    </a>
+                  <% } %>
+                  <a class="dropdown-item" href="/profile">
+                    <i class="fa-regular fa-user me-2 btn-light"></i>Profile
+                  </a>
+                  <% if(userListings && userListings.length> 0) { %>
+                    <a class="dropdown-item" href="/listings/owner/<%= currUser._id %>">
+                      <i class="fa-solid fa-list me-2 btn-light"></i>My Listings
+                    </a>
+                  <% } %>
+                  <div class="dropdown-divider"></div>
+                  <form action="/logout" method="POST" class="m-0">
+                    <button class="dropdown-item text-danger">
+                      <i class="fa-solid fa-right-from-bracket me-2 btn-light"></i>Logout
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           <% } %>

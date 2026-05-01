@@ -14,19 +14,32 @@
   <div class="row justify-content-center">
     <div class="col-lg-10">
       <div class="card border-0 shadow-lg overflow-hidden position-relative" style="border-radius: 1rem;">
+        <%
+          const hasProfileImage = currUser && currUser.profileImage && currUser.profileImage.url;
+        %>
         <%# Profile Header - displays user avatar, name, email and join date %>
         <div class="card-header bg-secondary text-white p-4">
           <div class="d-flex align-items-center">
             <%# User avatar (first letter of username) %>
             <div class="profile-image-container me-4">
-              <div class="profile-image-placeholder rounded-circle d-flex align-items-center justify-content-center text-black" style="width: 80px; height: 80px; background-color: var(--secondary-color); font-size: 2rem;">
-                <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
-              </div>
+              <% if(hasProfileImage) { %>
+                <img
+                  src="<%= currUser.profileImage.url %>"
+                  alt="Profile picture"
+                  class="rounded-circle border border-2 border-white"
+                  style="width: 80px; height: 80px; object-fit: cover;"
+                >
+              <% } else { %>
+                <div class="profile-image-placeholder rounded-circle d-flex align-items-center justify-content-center text-black" style="width: 80px; height: 80px; background-color: var(--secondary-color); font-size: 2rem;">
+                  <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
+                </div>
+              <% } %>
             </div>
             <%# User identification information %>
             <div>
               <h2 class="mb-1 profile-username"><%= currUser && currUser.username ? currUser.username : 'User' %></h2>
               <p class="text-white-50 mb-0"><%= currUser && currUser.email ? currUser.email : '' %></p>
+              <p class="text-white-50 mb-0 text-capitalize">Role: <%= userRole || 'user' %></p>
               <p class="text-white-50 mb-0">Member since <%= currUser && currUser.registerDate ? new Date(currUser.registerDate).toLocaleDateString('en-US', {year: 'numeric', month: 'long'}) : 'January 2023' %></p>
             </div>
           </div>
@@ -51,6 +64,11 @@
                   <input type="email" class="form-control" id="email" value="<%= currUser && currUser.email ? currUser.email : '' %>" disabled>
                   <div class="form-text text-muted">Email address cannot be changed at this time.</div>
                 </div>
+                <div class="mb-3">
+                  <label for="role" class="form-label">Account Role</label>
+                  <input type="text" class="form-control text-capitalize" id="role" value="<%= userRole || 'user' %>" disabled>
+                  <div class="form-text text-muted">Users can review, book, and save listings. Owners manage listings and receive booking notifications.</div>
+                </div>
               </form>
             </div>
           </div>
@@ -60,14 +78,32 @@
             <div class="card-body">
               <h5 class="card-title mb-3">Profile Picture</h5>
               <div class="d-flex align-items-center mb-3">
-                <div class="profile-image-placeholder me-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background-color: var(--secondary-color); font-size: 2.5rem;">
-                  <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
-                </div>
+                <% if(hasProfileImage) { %>
+                  <img
+                    src="<%= currUser.profileImage.url %>"
+                    alt="Profile picture"
+                    class="me-4 rounded-circle border"
+                    style="width: 100px; height: 100px; object-fit: cover;"
+                  >
+                <% } else { %>
+                  <div class="profile-image-placeholder me-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background-color: var(--secondary-color); font-size: 2.5rem;">
+                    <%= currUser && currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
+                  </div>
+                <% } %>
                 <div>
-                  <p class="text-muted mb-2">Profile picture functionality coming soon!</p>
-                  <button class="btn btn-sm btn-outline-primary" disabled>
-                    <i class="fa-solid fa-upload me-2"></i>Upload Picture
-                  </button>
+                  <p class="text-muted mb-2">Upload a profile image to personalize your account.</p>
+                  <form action="/profile/image" method="POST" enctype="multipart/form-data" class="d-flex flex-column flex-sm-row gap-2 align-items-sm-center">
+                    <input
+                      type="file"
+                      name="profileImage"
+                      class="form-control form-control-sm"
+                      accept=".png,.jpg,.jpeg"
+                      required
+                    >
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fa-solid fa-upload me-2"></i>Upload Picture
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -83,9 +119,35 @@
               </button>
             </div>
           </div>
+
+          <% if((userRole || 'user') === 'user') { %>
+          <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Recently Saved Properties</h5>
+                <a href="/wishlist" class="btn btn-sm btn-outline-dark">Open Wishlist</a>
+              </div>
+              <% if(recentWishlistItems && recentWishlistItems.length > 0) { %>
+                <div class="row g-3">
+                  <% recentWishlistItems.forEach((item) => { %>
+                    <div class="col-md-6">
+                      <div class="border rounded-3 p-3 h-100">
+                        <h6 class="mb-1"><%= item.listing ? item.listing.title : 'Listing removed' %></h6>
+                        <p class="text-muted mb-1"><%= item.collectionName %></p>
+                        <p class="mb-0 small"><%= item.tripNote || 'No trip note added yet.' %></p>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } else { %>
+                <p class="text-muted mb-0">You have not saved any properties yet.</p>
+              <% } %>
+            </div>
+          </div>
+          <% } %>
           
           <%# Create Listing Button - only shown if user has no listings %>
-          <% if(typeof userListings === 'undefined' || !userListings || userListings.length === 0) { %>
+          <% if((userRole || 'user') === 'owner' && (typeof userListings === 'undefined' || !userListings || userListings.length === 0)) { %>
           <div class="text-center mt-4">
             <p class="text-muted mb-3">You haven't created any listings yet. Ready to be a host?</p>
             <a href="/listings/new" class="btn btn-primary px-4 py-2">

@@ -22,6 +22,22 @@ const userSchema = new Schema({
         required: true,
         unique: true,  // Ensure email is unique
     },
+    profileImage: {
+        url: {
+            type: String,
+            default: ''
+        },
+        filename: {
+            type: String,
+            default: ''
+        }
+    },
+    role: {
+        type: String,
+        enum: ['user', 'owner'],
+        required: true,
+        default: 'user'
+    },
     registerDate: {
         type: Date,
         default: Date.now

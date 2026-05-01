@@ -41,6 +41,10 @@ const User=require('./models/user.js');
 const listingRouter=require('./routes/listing.js');
 //For Reviews
 const reviewRouter=require('./routes/review.js');
+const bookingRouter=require('./routes/booking.js');
+const listingBookingRouter=require('./routes/listingBooking.js');
+const notificationRouter=require('./routes/notification.js');
+const wishlistRouter=require('./routes/wishlist.js');
 //For User Routes
 const userRouter=require('./routes/user.js');
 
@@ -99,12 +103,18 @@ passport.deserializeUser(User.deserializeUser());
 
 //Flash and User Middleware
 const Listing = require('./models/listing.js');
+const Notification = require('./models/notification.js');
+const WishlistItem = require('./models/wishlistItem.js');
 
 app.use(async (req, res, next) => {
     res.locals.success = req.flash('success'); 
     res.locals.error = req.flash('error');
     res.locals.currUser = req.user;
     res.locals.originalUrl = req.originalUrl;
+    res.locals.userListings = [];
+    res.locals.unreadNotificationsCount = 0;
+    res.locals.savedListingIds = [];
+    res.locals.recentWishlistItems = [];
     
     // Check if user has listings and fetch them
     if (req.user) {
@@ -113,6 +123,34 @@ app.use(async (req, res, next) => {
         } catch (err) {
             console.error("Error fetching user listings:", err);
             res.locals.userListings = [];
+        }
+
+        if (req.user.role === 'owner') {
+            try {
+                res.locals.unreadNotificationsCount = await Notification.countDocuments({
+                    recipient: req.user._id,
+                    isRead: false
+                });
+            } catch (err) {
+                console.error("Error fetching notifications count:", err);
+                res.locals.unreadNotificationsCount = 0;
+            }
+        }
+
+        if (req.user.role === 'user') {
+            try {
+                const wishlistItems = await WishlistItem.find({ user: req.user._id })
+                    .populate('listing')
+                    .sort({ createdAt: -1 });
+                res.locals.savedListingIds = wishlistItems
+                    .filter((item) => item.listing)
+                    .map((item) => item.listing._id.toString());
+                res.locals.recentWishlistItems = wishlistItems.slice(0, 4);
+            } catch (err) {
+                console.error("Error fetching wishlist data:", err);
+                res.locals.savedListingIds = [];
+                res.locals.recentWishlistItems = [];
+            }
         }
     }
     
@@ -123,6 +161,10 @@ app.use(async (req, res, next) => {
 app.use('/', userRouter);
 app.use('/listings',listingRouter);
 app.use('/listings/:id/reviews',reviewRouter);
+app.use('/listings/:id/bookings', listingBookingRouter);
+app.use('/bookings', bookingRouter);
+app.use('/notifications', notificationRouter);
+app.use('/wishlist', wishlistRouter);
 
 // Redirect root to listings
 app.get('/', (req, res) => {
@@ -154,5 +196,3 @@ app.use((err, req, res, next) => {
 app.listen(3030,()=>{
     console.log(`Server is running at http://localhost:3030/listings`);
 });
-
-

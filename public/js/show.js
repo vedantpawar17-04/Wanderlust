@@ -2,6 +2,51 @@
 
 // Handle rating selection in the review form
 document.addEventListener('DOMContentLoaded', function() {
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+
+    if (checkInInput && checkOutInput) {
+        const openDatePicker = (input) => {
+            if (typeof input.showPicker === 'function') {
+                input.showPicker();
+            } else {
+                input.focus();
+                input.click();
+            }
+        };
+
+        const getNextDateValue = (dateValue) => {
+            const date = new Date(dateValue);
+            date.setDate(date.getDate() + 1);
+            return date.toISOString().split('T')[0];
+        };
+
+        const syncCheckOutMin = () => {
+            if (!checkInInput.value) {
+                return;
+            }
+
+            const nextDate = getNextDateValue(checkInInput.value);
+            checkOutInput.min = nextDate;
+
+            if (checkOutInput.value && checkOutInput.value <= checkInInput.value) {
+                checkOutInput.value = '';
+            }
+        };
+
+        checkInInput.addEventListener('change', syncCheckOutMin);
+        checkInInput.addEventListener('focus', () => openDatePicker(checkInInput));
+        checkOutInput.addEventListener('focus', () => openDatePicker(checkOutInput));
+
+        checkInInput.addEventListener('click', () => openDatePicker(checkInInput));
+        checkOutInput.addEventListener('click', () => {
+            syncCheckOutMin();
+            openDatePicker(checkOutInput);
+        });
+
+        syncCheckOutMin();
+    }
+
     // Handle star rating in the review form
     const ratingBtns = document.querySelectorAll('.rating-btn');
     const ratingInputs = document.querySelectorAll('input[name="review[rating]"]');

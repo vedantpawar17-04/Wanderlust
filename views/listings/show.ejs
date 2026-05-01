@@ -4,26 +4,31 @@
 <div class="container listing-container">
     <div class="row justify-content-center position-relative">
         <div class="col-lg-8">
-            <!-- Simple Title with fallback -->
-            <h1 class="simple-title mb-4"><%= listing.title || 'Untitled Listing' %></h1>
+            <%
+                let displayPrice = '0';
+                try {
+                    displayPrice = listing.price ? Number(listing.price).toLocaleString("en-US") : '0';
+                } catch (e) {
+                    console.error('Price formatting error:', e);
+                }
 
-            <!-- Main Image with validation -->
-            <% 
                 let imageUrl = '/images/default-listing.jpg';
                 let imageAlt = 'Default listing image';
                 if (listing.image && listing.image.url && typeof listing.image.url === 'string') {
-                    // Basic URL validation
                     if (listing.image.url.startsWith('http') || listing.image.url.startsWith('/')) {
                         imageUrl = listing.image.url;
                         imageAlt = listing.title || 'Listing image';
                     }
                 }
+
+                const today = new Date();
+                const todayDateValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             %>
+
+            <h1 class="simple-title mb-4"><%= listing.title || 'Untitled Listing' %></h1>
             <img src="<%= imageUrl %>" class="listing-image" alt="<%= imageAlt %>" onerror="this.src='/images/default-listing.jpg'">
 
-            <!-- Listing Information -->
             <div class="listing-info">
-                <!-- Owner -->
                 <div class="info-item">
                     <div class="info-label">
                         <i class="fas fa-user"></i> Host
@@ -33,25 +38,15 @@
                     </div>
                 </div>
 
-                <!-- Price -->
                 <div class="info-item">
                     <div class="info-label">
                         <i class="fas fa-tag"></i> Price
                     </div>
-                <div>
-                    <% 
-                        let displayPrice = '0';
-                        try {
-                            displayPrice = listing.price ? Number(listing.price).toLocaleString("en-US") : '0';
-                        } catch (e) {
-                            console.error('Price formatting error:', e);
-                        }
-                    %>
-                    ₹<%= displayPrice %> per night
-                </div>
+                    <div>
+                        Rs. <%= displayPrice %> for <%= listing.stayDays || 1 %> day<%= (listing.stayDays || 1) > 1 ? 's' : '' %> and <%= listing.stayNights || 1 %> night<%= (listing.stayNights || 1) > 1 ? 's' : '' %>
+                    </div>
                 </div>
 
-                <!-- Location -->
                 <div class="info-item">
                     <div class="info-label">
                         <i class="fas fa-map-marker-alt"></i> Location
@@ -61,7 +56,6 @@
                     </div>
                 </div>
 
-                <!-- Description -->
                 <div class="info-item">
                     <div class="info-label">
                         <i class="fas fa-info-circle"></i> Description
@@ -70,9 +64,8 @@
                         <%= listing.description || 'No description available' %>
                     </div>
                 </div>
-                
-                <!-- Owner Actions - Only show if current user is the owner -->
-                <% if(currUser && listing.owner && currUser._id && listing.owner._id && currUser._id.equals(listing.owner._id)) { %>
+
+                <% if(currUser && currUser.role === 'owner' && listing.owner && currUser._id && listing.owner._id && currUser._id.equals(listing.owner._id)) { %>
                 <div class="owner-actions mt-4 pt-3 border-top">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Owner Options</h5>
@@ -92,13 +85,98 @@
                     </div>
                 </div>
                 <% } %>
+
+                <div class="mt-4 pt-3 border-top">
+                    <h5 class="mb-3"><i class="fas fa-calendar-days me-2"></i>Booking Availability</h5>
+                    <% if (unavailableDates && unavailableDates.length > 0) { %>
+                        <div class="mb-3">
+                            <p class="text-muted mb-2">Unavailable date ranges:</p>
+                            <ul class="list-group">
+                                <% unavailableDates.forEach((booking) => { %>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <%= new Date(booking.checkIn).toLocaleDateString('en-US') %>
+                                            to
+                                            <%= new Date(booking.checkOut).toLocaleDateString('en-US') %>
+                                        </span>
+                                        <span class="badge text-bg-secondary text-capitalize"><%= booking.status %></span>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% } else { %>
+                        <p class="text-muted">No upcoming reservations yet. These dates are currently open.</p>
+                    <% } %>
+
+                    <% if (currUser && currUser.role === 'user') { %>
+                        <div class="card border-0 shadow-sm mt-3">
+                            <div class="card-body">
+                                <h6 class="mb-3">Reserve this stay</h6>
+                                <form action="/listings/<%= listing._id %>/bookings" method="POST" class="row g-3" id="bookingForm">
+                                    <div class="col-md-6">
+                                        <label for="checkIn" class="form-label">Check-in</label>
+                                        <input
+                                            type="date"
+                                            id="checkIn"
+                                            name="booking[checkIn]"
+                                            class="form-control booking-date-input"
+                                            min="<%= todayDateValue %>"
+                                            autocomplete="off"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="checkOut" class="form-label">Check-out</label>
+                                        <input
+                                            type="date"
+                                            id="checkOut"
+                                            name="booking[checkOut]"
+                                            class="form-control booking-date-input"
+                                            min="<%= todayDateValue %>"
+                                            autocomplete="off"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="col-12">
+                                        <p class="mb-2 text-muted small">Use the calendar picker to choose your stay dates.</p>
+                                        <p class="mb-2 text-muted">Price: Rs. <%= displayPrice %> for <%= listing.stayDays || 1 %> day<%= (listing.stayDays || 1) > 1 ? 's' : '' %> and <%= listing.stayNights || 1 %> night<%= (listing.stayNights || 1) > 1 ? 's' : '' %></p>
+                                        <button type="submit" class="btn btn-dark">Request Booking</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm mt-3">
+                            <div class="card-body">
+                                <h6 class="mb-3">Save to Wishlist and Trip Planner</h6>
+                                <form action="/wishlist/listings/<%= listing._id %>" method="POST" class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="collectionName" class="form-label">Collection</label>
+                                        <input type="text" id="collectionName" name="wishlist[collectionName]" class="form-control" value="My Wishlist" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="tripNote" class="form-label">Trip Note</label>
+                                        <input type="text" id="tripNote" name="wishlist[tripNote]" class="form-control" placeholder="Perfect for a weekend stay">
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-outline-dark">
+                                            <i class="fa-solid fa-heart me-2"></i>Save Listing
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    <% } else if (!currUser) { %>
+                        <div class="text-center mt-3">
+                            <a href="/login" class="btn btn-outline-dark rounded-pill px-4">Log in to book this stay</a>
+                        </div>
+                    <% } %>
+                </div>
             </div>
 
-            <!-- Reviews Section -->
             <div class="reviews-section">
                 <h2 class="reviews-title">Guest Reviews</h2>
 
-                <!-- Reviews List -->
                 <% if(listing.reviews && listing.reviews.length > 0) { %>
                     <% for(let review of listing.reviews) { %>
                         <div class="review-card">
@@ -108,8 +186,7 @@
                                 </h5>
                                 <div class="review-actions">
                                     <% if(currUser && review.author && review.author.equals && review.author.equals(currUser._id)) { %>
-                                        <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" 
-                                            method="POST" class="d-inline">
+                                        <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
                                             <button class="delete-review-btn">
                                                 <i class="fas fa-trash-alt me-1"></i> Delete
                                             </button>
@@ -128,9 +205,9 @@
                 <% } else { %>
                     <p class="text-muted">No reviews yet.</p>
                 <% } %>
-                <!-- Review Form -->
+
                 <% if(currUser) { %>
-                    <% if(currUser._id && listing.owner && !currUser._id.equals(listing.owner._id)) { %>
+                    <% if(currUser.role === 'user' && currUser._id && listing.owner && !currUser._id.equals(listing.owner._id)) { %>
                         <div class="review-form">
                             <h3>Write a Review</h3>
                             <form action="/listings/<%= listing._id %>/reviews" method="POST">
@@ -142,22 +219,27 @@
                                         <input type="radio" name="review[rating]" value="<%= i %>" hidden>
                                     <% } %>
                                 </div>
-                                <textarea class="review-textarea" name="review[comment]" 
-                                        placeholder="Share your experience..." required></textarea>
+                                <textarea class="review-textarea" name="review[comment]" placeholder="Share your experience..." required></textarea>
                                 <button type="submit" class="submit-btn mt-2">Submit Review</button>
                             </form>
                         </div>
-                    <% } else if(currUser._id && listing.owner && currUser._id.equals(listing.owner._id)) { %>
+                    <% } else if(currUser.role === 'owner' && currUser._id && listing.owner && currUser._id.equals(listing.owner._id)) { %>
                         <div class="alert alert-info text-center mt-4">
                             <i class="fas fa-info-circle me-2"></i>
                             You cannot review your own listing
                         </div>
+                    <% } else if(currUser.role === 'owner') { %>
+                        <div class="alert alert-info text-center mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Owner accounts can manage listings, while user accounts can write reviews.
+                        </div>
                     <% } %>
-                <% } else { %> 
+                <% } else { %>
                     <div class="text-center mt-4">
-                    <a href="/login" class="btn btn-outline-dark rounded-pill px-4">Log in to write a review</a>
+                        <a href="/login" class="btn btn-outline-dark rounded-pill px-4">Log in to write a review</a>
                     </div>
                 <% } %>
+
                 <div class="text-center mt-4">
                     <a href="/listings" class="btn btn-outline-dark rounded-pill px-4">Back to All Listings</a>
                 </div>

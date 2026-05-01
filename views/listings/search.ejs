@@ -196,7 +196,7 @@
                         </div>
                         <div class="card-body d-flex flex-column p-3">
                             <div class="listing-title mb-1"><%= listing.title %></div>
-                            <div class="listing-price mb-2">₹<%= listing.price.toLocaleString('en-IN') %> <span class="fw-normal">/ night</span></div>
+                            <div class="listing-price mb-2">Rs. <%= listing.price.toLocaleString('en-IN') %> <span class="fw-normal">/ <%= listing.stayDays || 1 %> day<%= (listing.stayDays || 1) > 1 ? 's' : '' %>, <%= listing.stayNights || 1 %> night<%= (listing.stayNights || 1) > 1 ? 's' : '' %></span></div>
                             <div class="listing-reviews mb-2">
                                 <% if (listing.reviews && listing.reviews.length > 0) { %>
                                     <i class="fa-solid fa-star text-warning me-1"></i> Reviews: <%= listing.reviews.length %>
@@ -208,10 +208,22 @@
                                 <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>
                                 <% if (listing.country) { %>, <%= listing.country %><% } %>
                             </div>
+                            <% if (currUser && currUser.role === 'user') { %>
+                                <form action="/wishlist/listings/<%= listing._id %>" method="POST" class="mb-3">
+                                    <input type="hidden" name="wishlist[collectionName]" value="My Wishlist">
+                                    <input type="hidden" name="wishlist[tripNote]" value="">
+                                    <button class="btn btn-sm btn-outline-dark w-100">
+                                        <i class="fa-solid fa-heart me-1"></i>
+                                        <%= savedListingIds && savedListingIds.includes(listing._id.toString()) ? 'Saved in Wishlist' : 'Save to Wishlist' %>
+                                    </button>
+                                </form>
+                            <% } %>
                             <button class="btn btn-sm btn-outline-primary mt-auto view-details-btn" 
                                     data-id="<%= listing._id %>"
                                     data-title="<%= listing.title %>"
                                     data-price="<%= listing.price.toLocaleString('en-IN') %>"
+                                    data-days="<%= listing.stayDays || 1 %>"
+                                    data-nights="<%= listing.stayNights || 1 %>"
                                     data-location="<%= listing.location %><% if (listing.country) { %>, <%= listing.country %><% } %>"
                                     data-image="<%= listing.image.url %>"
                                     data-reviews="<%= listing.reviews ? listing.reviews.length : 0 %>">
@@ -252,7 +264,7 @@
                     <div class="col-md-6">
                         <h4 id="modalTitle"></h4>
                         <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i><span id="modalLocation"></span></p>
-                        <p class="fs-5"><strong>₹<span id="modalPrice"></span></strong> <span class="text-muted">/ night</span></p>
+                        <p class="fs-5"><strong>Rs. <span id="modalPrice"></span></strong> <span class="text-muted">/ <span id="modalDuration"></span></span></p>
                         <p><i class="fas fa-star text-warning me-2"></i><span id="modalReviews"></span></p>
                     </div>
                 </div>
@@ -304,6 +316,8 @@
                 const id = this.getAttribute('data-id');
                 const title = this.getAttribute('data-title');
                 const price = this.getAttribute('data-price');
+                const days = this.getAttribute('data-days');
+                const nights = this.getAttribute('data-nights');
                 const location = this.getAttribute('data-location');
                 const image = this.getAttribute('data-image');
                 const reviews = this.getAttribute('data-reviews');
@@ -312,6 +326,7 @@
                 document.getElementById('modalTitle').textContent = title;
                 document.getElementById('modalLocation').textContent = location;
                 document.getElementById('modalPrice').textContent = price;
+                document.getElementById('modalDuration').textContent = `${days} day${Number(days) > 1 ? 's' : ''}, ${nights} night${Number(nights) > 1 ? 's' : ''}`;
                 document.getElementById('modalImage').src = image;
                 document.getElementById('viewFullDetails').href = `/listings/${id}`;
                 
@@ -400,3 +415,5 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 </style>
+
+

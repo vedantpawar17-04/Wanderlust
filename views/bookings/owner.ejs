@@ -1,0 +1,69 @@
+<% layout('/layouts/boilerplate') -%>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-1">Reservation Management</h1>
+      <p class="text-muted mb-0">Manage guest booking requests for your listings.</p>
+    </div>
+    <a href="/listings" class="btn btn-outline-dark">Back to Listings</a>
+  </div>
+
+  <% if (!bookings || bookings.length === 0) { %>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body py-5 text-center">
+        <h4>No reservations yet</h4>
+        <p class="text-muted">New booking requests will appear here.</p>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% bookings.forEach((booking) => { %>
+        <div class="col-12">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                  <h4 class="mb-1"><%= booking.listing ? booking.listing.title : 'Listing removed' %></h4>
+                  <p class="text-muted mb-1">
+                    Guest:
+                    <%= booking.user ? booking.user.username : 'Unknown' %>
+                    <% if (booking.user && booking.user.email) { %>
+                      (<%= booking.user.email %>)
+                    <% } %>
+                  </p>
+                  <p class="text-muted mb-0">
+                    <%= booking.listing ? booking.listing.location : 'Location unavailable' %>
+                    <% if (booking.listing && booking.listing.country) { %>, <%= booking.listing.country %><% } %>
+                  </p>
+                </div>
+                <span class="badge text-bg-secondary text-capitalize fs-6"><%= booking.status %></span>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-md-3"><strong>Check-in:</strong> <%= new Date(booking.checkIn).toLocaleDateString('en-US') %></div>
+                <div class="col-md-3"><strong>Check-out:</strong> <%= new Date(booking.checkOut).toLocaleDateString('en-US') %></div>
+                <div class="col-md-3"><strong>Total price:</strong> Rs. <%= Number(booking.totalPrice || 0).toLocaleString('en-US') %></div>
+                <div class="col-md-3"><strong>Requested on:</strong> <%= new Date(booking.createdAt).toLocaleDateString('en-US') %></div>
+              </div>
+
+              <form action="/bookings/<%= booking._id %>/status?_method=PUT" method="POST" class="row g-3 align-items-end mt-2">
+                <div class="col-md-4">
+                  <label for="status-<%= booking._id %>" class="form-label">Update status</label>
+                  <select id="status-<%= booking._id %>" name="booking[status]" class="form-select">
+                    <option value="pending" <%= booking.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="confirmed" <%= booking.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                    <option value="cancelled" <%= booking.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-dark">Save Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>

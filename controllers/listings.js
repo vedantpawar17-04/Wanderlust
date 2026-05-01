@@ -4,6 +4,7 @@
  * searching, filtering, and data display
  */
 const Listing = require('../models/listing.js');
+const Booking = require('../models/booking.js');
 const {listingSchema}=require('../schema.js');
 const ExpressError = require('../Utils/ExpressError');
 
@@ -131,6 +132,8 @@ module.exports.showListing = async (req, res, next) => {
         // Ensure required fields exist (data safety)
         if (!listing.title) listing.title = 'Untitled Listing';
         if (!listing.price) listing.price = 0;
+        if (!listing.stayDays) listing.stayDays = 1;
+        if (!listing.stayNights) listing.stayNights = 1;
         if (!listing.location) listing.location = 'Location not specified';
         if (!listing.country) listing.country = 'Country not specified';
         if (!listing.description) listing.description = 'No description available';
@@ -152,9 +155,22 @@ module.exports.showListing = async (req, res, next) => {
             });
         }
 
+        const activeBookings = await Booking.find({
+            listing: listing._id,
+            status: { $in: ['pending', 'confirmed'] }
+        }).sort({ checkIn: 1 });
+
+        const unavailableDates = activeBookings.map((booking) => ({
+            id: booking._id,
+            checkIn: booking.checkIn,
+            checkOut: booking.checkOut,
+            status: booking.status
+        }));
+
         // Render the listing details page
         res.render("listings/show.ejs", {
             listing,
+            unavailableDates,
             currUser: req.user || null
         });
     } catch (err) {

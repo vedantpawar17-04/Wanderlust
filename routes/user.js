@@ -2,6 +2,9 @@ const express=require('express');
 const wrapAsync = require('../Utils/wrapAsync');
 const passport = require('passport');
 const router=express.Router();
+const multer = require('multer');
+const { storage } = require('../cloudConfig.js');
+const upload = multer({ storage });
 // const User = require('../models/user.js');
 const { saveRedirectUrl, isLoggedIn } = require("../middleware.js");
 
@@ -33,5 +36,7 @@ router.get('/profile', isLoggedIn, wrapAsync(async (req, res, next) => {
         next(err);
     }
 }));
+
+router.post('/profile/image', isLoggedIn, upload.single('profileImage'), wrapAsync(userController.updateProfileImage));
 
 module.exports=router;

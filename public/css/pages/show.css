@@ -323,6 +323,14 @@
     color: var(--text-color);
 }
 
+.booking-date-input {
+    cursor: pointer;
+}
+
+.booking-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+
 /* Owner Actions */
 .owner-actions {
     background: rgba(0,0,0,0.02);

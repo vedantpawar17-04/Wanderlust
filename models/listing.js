@@ -5,6 +5,8 @@
 const mongoose= require('mongoose');
 const Schema=mongoose.Schema;
 const Review=require('./review.js');
+const Booking = require('./booking.js');
+const WishlistItem = require('./wishlistItem.js');
 
 /*
  * Listing Schema Definition
@@ -32,6 +34,16 @@ const listingSchema=new Schema({
     },
 
     price:Number,
+    stayDays: {
+        type: Number,
+        default: 1,
+        min: 1
+    },
+    stayNights: {
+        type: Number,
+        default: 1,
+        min: 1
+    },
     location:String,
     country:String,
 
@@ -55,9 +67,9 @@ const listingSchema=new Schema({
  */
 listingSchema.post("findOneAndDelete",async(listing)=>{
     if(listing){
-        {
-           await Review.deleteMany({_id:{$in:listing.reviews}});
-        }
+        await Review.deleteMany({_id:{$in:listing.reviews}});
+        await Booking.deleteMany({ listing: listing._id });
+        await WishlistItem.deleteMany({ listing: listing._id });
     }
 })
 

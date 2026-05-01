@@ -22,6 +22,8 @@ module.exports.listingSchema = Joi.object({
         location: Joi.string().required(),
         country: Joi.string().required(),
         price: Joi.number().required().min(0).max(100000),
+        stayDays: Joi.number().required().min(1).max(365),
+        stayNights: Joi.number().required().min(1).max(365),
         image: Joi.string().allow("",null)
     }).required(),
 });
@@ -37,4 +39,24 @@ module.exports.reviewSchema=Joi.object({
         rating: Joi.number().required().min(1).max(5),
         comment: Joi.string().required()
     }).required(),
-})
+});
+
+module.exports.bookingSchema = Joi.object({
+    booking: Joi.object({
+        checkIn: Joi.date().required(),
+        checkOut: Joi.date().required()
+    }).required()
+});
+
+module.exports.bookingStatusSchema = Joi.object({
+    booking: Joi.object({
+        status: Joi.string().valid('pending', 'confirmed', 'cancelled').required()
+    }).required()
+});
+
+module.exports.wishlistSchema = Joi.object({
+    wishlist: Joi.object({
+        collectionName: Joi.string().trim().min(1).max(50).required(),
+        tripNote: Joi.string().allow('').max(200)
+    }).required()
+});

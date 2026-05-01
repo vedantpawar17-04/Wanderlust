@@ -1,0 +1,52 @@
+<% layout('/layouts/boilerplate') -%>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-1">Notifications</h1>
+      <p class="text-muted mb-0">Booking updates and alerts for your account appear here.</p>
+    </div>
+    <form action="/notifications/read-all?_method=PUT" method="POST">
+      <button class="btn btn-outline-dark">Mark All Read</button>
+    </form>
+  </div>
+
+  <% if (!notifications || notifications.length === 0) { %>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-5 text-center">
+          <h4>No notifications yet</h4>
+          <p class="text-muted">New booking requests and status updates will show here.</p>
+        </div>
+      </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% notifications.forEach((notification) => { %>
+        <div class="col-12">
+          <div class="card border-0 shadow-sm <%= notification.isRead ? '' : 'border-start border-4 border-dark' %>">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                  <h5 class="mb-2"><%= notification.message %></h5>
+                  <p class="text-muted mb-0">
+                    <%= new Date(notification.createdAt).toLocaleString('en-US') %>
+                  </p>
+                </div>
+                <span class="badge <%= notification.isRead ? 'text-bg-secondary' : 'text-bg-danger' %>">
+                  <%= notification.isRead ? 'Read' : 'New' %>
+                </span>
+              </div>
+              <div class="mt-3 d-flex gap-2">
+                <a href="<%= notification.link %>" class="btn btn-dark">Open</a>
+                <% if (!notification.isRead) { %>
+                  <form action="/notifications/<%= notification._id %>/read?_method=PUT" method="POST">
+                    <button class="btn btn-outline-secondary">Mark Read</button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>

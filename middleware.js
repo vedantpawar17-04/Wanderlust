@@ -6,7 +6,7 @@
 const Listing = require('./models/listing.js');
 const Review = require('./models/review.js');
 const ExpressError=require('./Utils/ExpressError.js');
-const { reviewSchema, listingSchema } = require('./schema.js');
+const { reviewSchema, listingSchema, bookingSchema, bookingStatusSchema, wishlistSchema } = require('./schema.js');
 
 /*
  * Check if user is logged in
@@ -23,6 +23,22 @@ module.exports.isLoggedIn = (req, res, next) => {
         req.session.redirectUrl = req.originalUrl;
         req.flash('error', 'Access restricted - Sign up for an account to unlock this content.');
         return res.redirect('/login');
+    }
+    next();
+}
+
+module.exports.isOwnerRole = (req, res, next) => {
+    if (!req.user || req.user.role !== 'owner') {
+        req.flash('error', 'Only owners can create or manage listings.');
+        return res.redirect('/listings');
+    }
+    next();
+}
+
+module.exports.isUserRole = (req, res, next) => {
+    if (!req.user || req.user.role !== 'user') {
+        req.flash('error', 'Only users can write reviews.');
+        return res.redirect('/listings');
     }
     next();
 }
@@ -53,6 +69,10 @@ module.exports.saveRedirectUrl = (req, res,next) => {
 module.exports.isOwner = async(req, res, next) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
+    if (!req.user || req.user.role !== 'owner') {
+        req.flash('error', 'Only owners can manage listings.');
+        return res.redirect(`/listings/${id}`);
+    }
     if (!listing.owner._id.equals(res.locals.currUser._id)) {
         req.flash('error', 'You are not the owner of this listings !');
         return res.redirect(`/listings/${id}`);
@@ -130,4 +150,31 @@ module.exports.validateListing = (req, res, next) => {
     } else {
         next();
     }
+};
+
+module.exports.validateBooking = (req, res, next) => {
+    let { error } = bookingSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(',');
+        throw new ExpressError(errMsg, 400);
+    }
+    next();
+};
+
+module.exports.validateBookingStatus = (req, res, next) => {
+    let { error } = bookingStatusSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(',');
+        throw new ExpressError(errMsg, 400);
+    }
+    next();
+};
+
+module.exports.validateWishlist = (req, res, next) => {
+    let { error } = wishlistSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(',');
+        throw new ExpressError(errMsg, 400);
+    }
+    next();
 };

@@ -74,6 +74,18 @@
               <div class="valid-feedback">Looks good!</div>
               <div class="invalid-feedback">Please provide a valid email address</div>
             </div>
+
+            <div class="mb-4">
+              <label for="role" class="form-label fw-bold">Account Role</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text"><i class="fa-solid fa-user-tag"></i></span>
+                <select name="role" id="role" class="form-select" required>
+                  <option value="user" selected>User - Can review listings</option>
+                  <option value="owner">Owner - Can create and manage listings</option>
+                </select>
+              </div>
+              <div class="form-text">Choose how you want to use Wanderlust.</div>
+            </div>
             
             <div class="mb-4">
               <label for="password" class="form-label fw-bold">Password</label>
